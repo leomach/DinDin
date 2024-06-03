@@ -1,0 +1,172 @@
+.transacoes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-top: 30px;
+}
+
+.transacoes .title {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+}
+
+.transacoes .title h1 {
+    font-size: xx-large;
+}
+
+@media screen and (max-width: 768px){
+    .transacoes .title h1 {
+        font-size: x-large;
+    }
+}
+
+.transacoes .title .btn {
+    font-size: small;
+    font-weight: 600;
+    text-decoration: none;
+    color: aliceblue;
+    background-color: #0b8351;
+    width: max-content;
+    padding: 4px 12px;
+    border: solid 1px transparent;
+    transition: all 0.3s;
+}
+
+.transacoes .title .btn:hover {
+    background-color: transparent;
+    border: solid 1px #0b8351;
+    color: #0b8351;
+    transition: all 0.3s;
+}
+
+.transacoes .transacoes-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    margin-top: 40px;
+    gap: 20px;
+}
+
+.transacoes .transacoes-list .tabela-transacoes {
+    width: 100%;
+
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    
+}
+
+.transacoes .transacoes-list .tabela-transacoes tr td {
+    text-align: center;
+}
+
+.transacoes .transacoes-list .tabela-transacoes tr td a:first-child {
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 600;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 7px;
+    background-color: #836d0b;
+    transition: all 0.3s;
+    opacity: 100%;
+}
+.transacoes .transacoes-list .tabela-transacoes tr td a:last-child {
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 600;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 7px;
+    background-color: #830b0b;
+    transition: all 0.3s;
+    opacity: 100%;
+}
+
+.transacoes .transacoes-list .tabela-transacoes tr td a:first-child:hover {
+    opacity: 80%;
+    transition: all 0.3s;
+}
+.transacoes .transacoes-list .tabela-transacoes tr td a:last-child:hover {
+    opacity: 80%;
+    transition: all 0.3s;
+}
+
+.transacoes .transacoes-list .tabela-transacoes tr td:nth-child(7) {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+
+@media screen and (max-width: 768px) {
+    .transacoes .transacoes-list .tabela-transacoes {
+                background-color: transparent;
+                border-radius: 0;
+                padding: 0;
+
+    }
+    .transacoes .transacoes-list .tabela-transacoes thead{
+        display: none;
+    }
+
+    .transacoes .transacoes-list .tabela-transacoes tbody{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+
+    }
+
+    .transacoes .transacoes-list .tabela-transacoes tr {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        width: 100%;
+
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+    }
+    
+    .transacoes .transacoes-list .tabela-transacoes tr {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        font-size: smaller;
+    }
+
+    .transacoes .transacoes-list .tabela-transacoes tr td {
+        padding: 0;
+        margin: 0;
+    }
+
+    .transacoes .transacoes-list .tabela-transacoes tr td:nth-child(1) {
+        color: #919191;
+    }
+    .transacoes .transacoes-list .tabela-transacoes tr td:nth-child(2) {
+        font-weight: 600;
+        color: #0b8351;
+        font-size: medium;
+        text-align: left;
+    }
+    .transacoes .transacoes-list .tabela-transacoes tr td:nth-child(3) {
+        font-size: medium;
+    }
+    .transacoes .transacoes-list .tabela-transacoes tr td:nth-child(5),
+    .transacoes .transacoes-list .tabela-transacoes tr td:nth-child(6){
+        display: none;
+    }
+    .transacoes .transacoes-list .tabela-transacoes tr td:nth-child(7) {
+        margin-top: 5px;
+        width: 100%;
+    }
+}
