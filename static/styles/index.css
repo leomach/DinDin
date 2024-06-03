@@ -1,0 +1,89 @@
+@media screen and (min-width: 769px) {
+    .index {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .index .topo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .index .topo .title {
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+    }
+    
+    .index .topo .title h1 {
+        font-size: xx-large;
+    }
+    
+}
+
+@media screen and (max-width: 768px){
+    .index {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .index .topo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 25px 0 10px 0;
+        border-radius: 0 0 10px 10px;
+        box-shadow: 0px 8px 10px #0000006e;
+
+        background-color: #053d31;
+    }
+    
+    .index .topo .title {
+        display: none;
+    }
+    
+    .index .topo .titulo p {
+        color: #e3f7e8;
+        color: #fff;
+        font-size: large;
+        font-weight: 600;
+    }
+    
+    .index .topo .gerais {
+        color: #fff;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+        flex-wrap: nowrap;
+    }
+    .index .topo .gerais .info{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .index .topo .gerais .info-principal{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .index .topo .gerais .info h4{
+        font-size: small;
+    }
+}

@@ -1,0 +1,30 @@
+{% extends "shared/base.html"%}
+{% load static %}
+{% block content %}
+    <section class="contas">
+        <div class="title">
+            <h1>Contas ativas</h1>
+            <a href="{% url 'criar_conta' %}" class="btn">Nova conta</a>
+        </div>
+        <div class="contas-list">
+            {% for conta in contas %}
+                <div class="conta">
+                    <div class="info">
+                        <h3>{{ conta.nome }}</h3>
+                        <p>{{ conta.descricao }}</p>
+                    </div>
+                    <div class="acoes">
+                        <form action="{% url 'editar_conta' conta.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-editar">Editar</button>
+                        </form>
+                        <form action="{% url 'excluir_conta' conta.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-deletar">Deletar</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock content %}

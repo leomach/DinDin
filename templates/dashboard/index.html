@@ -1,0 +1,102 @@
+{% extends "shared/base.html" %}
+{% load static %}
+{% block content %}
+<section class="index">
+    <div class="topo">
+        <div class="titulo">
+            <p>MENSAL</p>
+        </div>
+        <div class="gerais">
+            <div class="info">
+                <h4>Mês anterior</h4>
+                <p>R${{saldo_mes_anterior}}</p>
+            </div>
+            <div class="info-principal">
+                <h4>Saldo</h4>
+                <p>R${{saldo_total_contas}}</p>
+            </div>
+            <div class="info">
+                <h4>Economia</h4>
+                <p>R${{economia}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="mes">
+        <div class="titulo">
+            <h4>Mês atual</h4>
+        </div>
+        <div class="cards">
+            <div class="card">
+                <div class="icone">
+                    <div class="icone-receita">
+                        <i class="fa-sharp fa-solid fa-arrow-up"></i>
+                    </div>
+                </div>
+                <div class="titulos">
+                    <h4>Receitas</h4>
+                    <h3>Mês anterior</h3>
+                </div>
+                <div class="valor">
+                    <h4>R${{receitas_mes_atual}}</h4>
+                    <h3>R${{receitas_mes_anterior}}</h3>
+                </div>
+            </div>
+            <div class="card">
+                <div class="icone">
+                    <div class="icone-despesa">
+                        <i class="fa-sharp fa-solid fa-arrow-down"></i>
+                    </div>
+                </div>
+                <div class="titulos">
+                    <h4>Despesas</h4>
+                    <h3>Mês anterior</h3>
+                </div>
+                <div class="valor">
+                    <h4>R${{despesas_mes_atual}}</h4>
+                    <h3>R${{despesas_mes_anterior}}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="transacoes-list">
+        <table class="tabela-transacoes">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                    <th>Tipo</th>
+                    <th>Categoria</th>
+                    <th>Conta</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transacao in page.object_list %}
+                    <tr>
+                        <td>{{ transacao.data|date:"d/m/Y" }}</td>
+                        <td>{{ transacao.descricao }}</td>
+                        <td>R$ {{ transacao.valor|floatformat:2 }}</td>
+                        <td>{{ transacao.get_tipo_display }}</td>
+                        <td>{{ transacao.categoria.nome }}</td>
+                        <td>{{ transacao.conta.nome }}</td>
+                        <td>
+                            <a href="{% url 'editar_transacao' transacao.pk %}" class="editar">#</a>
+                            <a href="{% url 'excluir_transacao' transacao.pk %}" class="excluir">X</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="paginacao">
+            {% if page.has_previous %}
+                <a href="{% url 'listar_transacoes'%}?page={{ page.previous_page_number }}" class="btn">Anterior</a>
+            {% endif %}
+            <p>Página {{ page.number }} de {{ page.paginator.num_pages }}</p>
+            {% if page.has_next %}
+                <a href="{% url 'listar_transacoes'%}?page={{ page.next_page_number }}" class="btn">Próximo</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

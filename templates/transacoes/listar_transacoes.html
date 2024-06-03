@@ -1,0 +1,50 @@
+{% extends "shared/base.html"%}
+{% load static %}
+{% block content %}
+<section class="transacoes">
+        <div class="title">
+            <h1>Transações realizadas</h1>
+            <a href="{% url 'criar_transacao' %}" class="btn">Nova transação</a>
+        </div>
+        <div class="transacoes-list">
+            <table class="tabela-transacoes">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                        <th>Tipo</th>
+                        <th>Categoria</th>
+                        <th>Conta</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transacao in page.object_list %}
+                        <tr>
+                            <td>{{ transacao.data|date:"d/m/Y" }}</td>
+                            <td>{{ transacao.descricao }}</td>
+                            <td>R$ {{ transacao.valor|floatformat:2 }}</td>
+                            <td>{{ transacao.get_tipo_display }}</td>
+                            <td>{{ transacao.categoria.nome }}</td>
+                            <td>{{ transacao.conta.nome }}</td>
+                            <td>
+                                <a href="{% url 'editar_transacao' transacao.pk %}" class="editar">#</a>
+                                <a href="{% url 'excluir_transacao' transacao.pk %}" class="excluir">X</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="paginacao">
+                {% if page.has_previous %}
+                    <a href="{% url 'listar_transacoes'%}?page={{ page.previous_page_number }}" class="btn">Anterior</a>
+                {% endif %}
+                <p>Página {{ page.number }} de {{ page.paginator.num_pages }}</p>
+                {% if page.has_next %}
+                    <a href="{% url 'listar_transacoes'%}?page={{ page.next_page_number }}" class="btn">Próximo</a>
+                {% endif %}
+            </div>
+        </div>
+</section>
+{% endblock %}

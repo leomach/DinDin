@@ -1,0 +1,31 @@
+{% extends "shared/base.html"%}
+{% load static %}
+{% block content %}
+    <section class="categorias">
+        <div class="title">
+            <h1>Categorias ativas</h1>
+            <a href="{% url 'criar_categoria' %}" class="btn">Nova categoria</a>
+        </div>
+        <div class="categorias-list">
+            {% for categoria in categorias %}
+            <div class="categoria">
+                <div class="info">
+                    <h3>{{ categoria.nome }}</h3>
+                    <p>{{ categoria.descricao }}</p>
+                </div>
+                <div class="acoes">
+                        <a href="{% url 'subcategorias' categoria.id %}" class="btn-subcategorias">Subcategorias</a>
+                        <form action="{% url 'editar_categoria' categoria.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-editar">#</button>
+                        </form>
+                        <form action="{% url 'excluir_categoria' categoria.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-deletar">X</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock content %}

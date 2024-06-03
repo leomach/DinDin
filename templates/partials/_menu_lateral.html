@@ -1,0 +1,89 @@
+{% load static %}
+<nav id="sidebar">
+    <div id="sidebar_content">
+        <div id="user">
+            <p id="user_infos">
+                <span class="item-description-user">
+                    {% if not usuario %}
+                    A DinDin facilita!
+                    {% else %}
+                    Olá, {{ usuario }}!
+                    {% endif %}
+                </span>
+                <span class="item-description-user">
+                    Seja bem-vindo.
+                </span>
+            </p>
+        </div>
+
+        <ul id="side_items">
+            <li class="side-item">
+                <a href="{% url 'index'%}">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span class="item-description">
+                        Dashboard
+                    </span>
+                </a>
+            </li>
+
+            <li class="side-item">
+                <a href="{% url 'listar_transacoes' %}">
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+                    <span class="item-description">
+                        Transações
+                    </span>
+                </a>
+            </li>
+
+            <li class="side-item">
+                <a href="#">
+                    <i class="fa-regular fa-credit-card"></i>
+                    <span class="item-description">
+                        Parceladas
+                    </span>
+                </a>
+            </li>
+
+            <li class="side-item">
+                <a href="{% url 'contas'%}">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span class="item-description">
+                        Minhas contas
+                    </span>
+                </a>
+            </li>
+
+            <li class="side-item">
+                <a href="{% url 'categorias'%}">
+                    <i class="fa-solid fa-tag"></i>
+                    <span class="item-description">
+                        Categorias
+                    </span>
+                </a>
+            </li>
+
+            <li class="side-item">
+                <a href="#">
+                    <i class="fa-solid fa-gear"></i>
+                    <span class="item-description">
+                        Configurações
+                    </span>
+                </a>
+            </li>
+        </ul>
+
+        <button onclick="abrirMenu()" id="open_btn">
+            <i id="open_btn_icon" class="fa-solid fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <div id="logout">
+        <a href="{% url 'logout' %}" id="logout_btn">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span class="item-description">
+                Logout
+            </span>
+        </a>
+    </div>
+</nav>
+<script src="{% static '/scripts/menu_lateral.js' %}"></script>

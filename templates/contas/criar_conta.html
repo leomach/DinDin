@@ -1,0 +1,21 @@
+{% extends "shared/base.html"%}
+{% load static %}
+{% block content %}
+    <section class="criar-conta">
+        <div class="title">
+            <h1>Nova conta</h1>
+        </div>
+        <div class="form">
+            <form action="{% url 'add_conta' %}" method="POST">
+                {% csrf_token %}
+                {% for field in form.visible_fields %}
+                <div class="campo">
+                    <label for="{{ field.id_for_label }}">{{field.label}}</label>
+                    {{ field }}
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn">Salvar</button>
+            </form>
+        </div>
+    </section>
+{% endblock %}

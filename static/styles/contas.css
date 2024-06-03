@@ -1,0 +1,109 @@
+.contas {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-top: 30px;
+}
+
+.contas .title {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+}
+
+.contas .title h1 {
+    font-size: xx-large;
+}
+
+@media screen and (max-width: 768px){
+    .contas .title h1 {
+        font-size: x-large;
+    }
+}
+
+.contas .title .btn {
+    font-size: small;
+    font-weight: 600;
+    text-decoration: none;
+    color: aliceblue;
+    background-color: #0b8351;
+    width: max-content;
+    padding: 4px 12px;
+    border: solid 1px transparent;
+    transition: all 0.3s;
+}
+
+.contas .title .btn:hover {
+    background-color: transparent;
+    border: solid 1px #0b8351;
+    color: #0b8351;
+    transition: all 0.3s;
+}
+
+.contas .contas-list {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    width: 80%;
+    margin-top: 40px;
+    gap: 20px;
+}
+
+.contas .contas-list .conta {
+    width: 100%;
+    background-color: #FFF;
+    padding: 10px 20px;
+    gap: 5px;
+}
+
+.contas .contas-list .conta .acoes {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    gap: 10px;
+}
+
+.contas .contas-list .conta .acoes form {
+    width: 50%;
+    height: 100%;
+}
+
+.contas .contas-list .conta .acoes form .btn-editar {
+    text-decoration: none;
+    font-size: small;
+    font-weight: 600;
+    background-color: #83770b;
+    color: #FFF;
+    width: 100%;
+    padding: 5px 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.contas .contas-list .conta .acoes form .btn-deletar {
+    text-decoration: none;
+    font-size: small;
+    font-weight: 600;
+    background-color: #830b0b;
+    color: #FFF;
+    width: 100%;
+    padding: 5px 20px;
+    text-align: center;
+    opacity: 100%;
+    transition: all 0.3;
+    cursor: pointer;
+}
+
+.contas .contas-list .conta .acoes .btn-editar:hover {
+    opacity: 80%;
+    transition: all 0.3;
+}
+.contas .contas-list .conta .acoes .btn-deletar:hover {
+    opacity: 80%;
+    transition: all 0.3;
+}

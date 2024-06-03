@@ -1,0 +1,88 @@
+/* Chrome, Safari, Edge, Opera */
+.criar-subcategoria input::-webkit-outer-spin-button,
+.criar-subcategoria ::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.criar-subcategoria [type=number] {
+  -moz-appearance: textfield;
+}
+
+.criar-subcategoria {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-top: 30px;
+}
+
+.criar-subcategoria .title {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+}
+
+.criar-subcategoria .title h1 {
+    font-size: xx-large;
+}
+
+.criar-subcategoria .form {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    width: 80%;
+    margin-top: 20px;
+    padding: 20px 20px 30px 20px;
+    background-color: #ffffff;
+}
+
+.criar-subcategoria form {
+    width: 100%;
+}
+
+.criar-subcategoria .campo {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.criar-subcategoria .campo label {
+    font-size: medium;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.criar-subcategoria .campo input,
+.criar-subcategoria .campo select {
+    padding: 15px;
+    width: 100%;
+    border: solid 1px #0b8351;
+    border-radius: 8px;
+}
+
+.criar-subcategoria .btn {
+    font-size: small;
+    font-weight: 600;
+    text-decoration: none;
+    color: aliceblue;
+    background-color: #0b8351;
+    width: 100%;
+    padding: 4px 12px;
+    margin-top: 20px;
+    border: solid 1px transparent;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.criar-subcategoria .btn:hover {
+    background-color: transparent;
+    border: solid 1px #0b8351;
+    color: #0b8351;
+    transition: all 0.3s;
+}

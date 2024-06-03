@@ -1,0 +1,87 @@
+/* Chrome, Safari, Edge, Opera */
+.criar-categoria input::-webkit-outer-spin-button,
+.criar-categoria ::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.criar-categoria [type=number] {
+  -moz-appearance: textfield;
+}
+
+.criar-categoria {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-top: 30px;
+}
+
+.criar-categoria .title {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+}
+
+.criar-categoria .title h1 {
+    font-size: xx-large;
+}
+
+.criar-categoria .form {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    width: 80%;
+    margin-top: 20px;
+    padding: 20px 20px 30px 20px;
+    background-color: #ffffff;
+}
+
+.criar-categoria form {
+    width: 100%;
+}
+
+.criar-categoria .campo {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.criar-categoria .campo label {
+    font-size: medium;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.criar-categoria .campo input {
+    padding: 15px;
+    width: 100%;
+    border: solid 1px #0b8351;
+    border-radius: 8px;
+}
+
+.criar-categoria .btn {
+    font-size: small;
+    font-weight: 600;
+    text-decoration: none;
+    color: aliceblue;
+    background-color: #0b8351;
+    width: 100%;
+    padding: 4px 12px;
+    margin-top: 20px;
+    border: solid 1px transparent;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.criar-categoria .btn:hover {
+    background-color: transparent;
+    border: solid 1px #0b8351;
+    color: #0b8351;
+    transition: all 0.3s;
+}
