@@ -91,6 +91,12 @@
 
 }
 
+.btn-cadastro {
+    align-self: center;
+    text-align: center;
+    margin-top: 15px;
+}
+
 @media screen and (max-width: 768px) {
     
 

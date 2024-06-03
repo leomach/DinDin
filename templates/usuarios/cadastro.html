@@ -12,8 +12,8 @@
     <div class="page-login">
         <form action="{% url 'login' %}" method="POST" class="formLogin">
             {% csrf_token %}
-            <h1>Login</h1>
-            <p>Digite os seus dados de acesso no campo abaixo.</p>
+            <h1>Cadastre-se</h1>
+            <p>Comece a facilitar sua vida com a DinDin! <3 Preencha os campos abaixo.</p>
             {% for field in form.visible_fields %}
             <div class="campo">
                 <label for="{{ field.id_for_label }}">{{field.label}}</label>
@@ -21,7 +21,7 @@
             </div>
             {% endfor %}
             <input type="submit" value="Acessar" class="btn" />
-            <a href="{% url 'cadastro' %}" class="btn-cadastro">Criar uma conta</a>
+            <a href="{% url 'login' %}" class="btn-cadastro">Já tem uma conta? Faça login.</a>
         </form>
     </div>
 </body>
