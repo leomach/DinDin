@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Transacao, TransacaoParcelada
+from .models import Transacao, TransacaoParcelada, Parcela
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Sum
@@ -126,19 +126,35 @@ def criar_transacao_parcelada(request):
                     parcelas = 0
                 
                 
-                Transacao.objects.create(
-                    usuario=usuario,
-                    conta=conta,
-                    data=data,
-                    descricao=descricao,
-                    valor=valor,
-                    tipo=tipo,
-                    categoria=categoria,
-                    subcategoria=subcategoria
-                )
+                try:
+                    trans_par = TransacaoParcelada.objects.create(
+                        usuario=usuario,
+                        conta=conta,
+                        data=data,
+                        descricao=descricao,
+                        valor_total=valor,
+                        parcelas=parcelas,
+                        tipo=tipo,
+                        categoria=categoria,
+                        subcategoria=subcategoria
+                    )
 
-                messages.success(request, 'Transação criada com sucesso!')
-                return redirect('listar_transacoes')
+                    if TransacaoParcelada.objects.get(id=trans_par.id) is None:
+                        messages.error(request, f'Erro ao criar transação: {e}')
+                        return redirect('listar_transacoes')
+                    
+                    for i in range(1, parcelas + 1):
+                        Parcela.objects.create(
+                            transacao_parcelada=get_object_or_404(TransacaoParcelada, pk=trans_par, usuario=usuario),
+                            numero=i,
+                            valor=valor / parcelas
+                        )
+
+                    messages.success(request, 'Transação criada com sucesso!')
+                    return redirect('listar_transacoes')
+                
+                except Exception as e:
+                    messages.error(request, f'Erro ao criar transação: {e}')
 
             except Exception as e:
                 messages.error(request, f'Erro ao criar transação: {e}')
@@ -150,7 +166,7 @@ def criar_transacao_parcelada(request):
     categorias = Categoria.objects.filter(usuario=request.user)
     subcategorias = Subcategoria.objects.filter(usuario=request.user)
 
-    return render(request, 'transacoes/criar_transacao.html', {
+    return render(request, 'transacoes/criar_transacao_parcelada.html', {
         'form': form,
         'contas': contas,
         'categorias': categorias,
