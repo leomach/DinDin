@@ -18,10 +18,10 @@ class TransacaoParceladaForm(forms.ModelForm):
         ]
         exclude = ['id', 'usuario']
         labels = {
-            'data': 'Data da compra',
+            'data': 'Data da transação',
             'descricao': 'Descrição',
             'parcelas': 'Quantidade de parcelas',
-            'valor_total': 'Valor total da compra',
+            'valor_total': 'Valor total da transação',
             'conta': 'Conta',
             'categoria': 'Categoria',
             'subcategoria': 'Subcategoria',

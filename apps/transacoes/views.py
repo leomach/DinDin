@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Transacao
+from .models import Transacao, TransacaoParcelada
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Sum
 from ..conta.models import Conta
 from ..categorias.models import Categoria
 from ..subcategorias.models import Subcategoria
-from .forms import TransacaoForm
+from .forms import TransacaoForm, TransacaoParceladaForm
 from django.core.paginator import Paginator
 
 def listar_transacoes(request):
@@ -101,14 +101,15 @@ def criar_transacao_parcelada(request):
     View para criar uma nova transação parcelada.
     """
     if request.method == 'POST':
-        form = TransacaoForm(request.POST)
+        form = TransacaoParceladaForm(request.POST)
 
         if form.is_valid():
             usuario = request.user
             conta = get_object_or_404(Conta, pk=form.cleaned_data['conta'].id, usuario=usuario)
             data = form.cleaned_data['data']
             descricao = form.cleaned_data['descricao']
-            valor = form.cleaned_data['valor']
+            valor = form.cleaned_data['valor_total']
+            parcelas = form.cleaned_data['parcelas', None]
             tipo = form.cleaned_data['tipo']
             categoria = form.cleaned_data['categoria']
             subcategoria = form.cleaned_data['subcategoria']
@@ -120,7 +121,11 @@ def criar_transacao_parcelada(request):
                     conta.saldo_atual += valor
 
                 conta.save()
-
+                
+                if not parcelas:
+                    parcelas = 0
+                
+                
                 Transacao.objects.create(
                     usuario=usuario,
                     conta=conta,

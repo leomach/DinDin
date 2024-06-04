@@ -42,6 +42,17 @@ class TransacaoParcelada(models.Model):
             return 'Despesa'
         else:
             return 'Receita'
+        
+class Parcela(models.Model):
+    """
+    Modelo para representar parcelas de transações financeiras.
+    """
+    transacao_parcelada = models.ForeignKey(TransacaoParcelada, on_delete=models.CASCADE)
+    numero_parcela = models.PositiveIntegerField(null=False, blank=True)
+    valor_parcela = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)
+
+    def __str__(self):
+        return f'{self.transacao_parcelada.descricao} - R${self.valor_parcela} - {self.numero_parcela}ª Parcela'
 
 class Transacao(models.Model):
     """
