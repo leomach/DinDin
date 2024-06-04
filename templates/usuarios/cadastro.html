@@ -10,7 +10,7 @@
 </head>
 <body>
     <div class="page-login">
-        <form action="{% url 'login' %}" method="POST" class="formLogin">
+        <form action="{% url 'cadastro' %}" method="POST" class="formLogin">
             {% csrf_token %}
             <h1>Cadastre-se</h1>
             <p>Comece a facilitar sua vida com a DinDin! <3 Preencha os campos abaixo.</p>
@@ -20,7 +20,7 @@
                     {{ field }}
             </div>
             {% endfor %}
-            <input type="submit" value="Acessar" class="btn" />
+            <input type="submit" value="Cadastrar" class="btn" />
             <a href="{% url 'login' %}" class="btn-cadastro">Já tem uma conta? Faça login.</a>
         </form>
     </div>

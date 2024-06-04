@@ -18,13 +18,13 @@ class LoginForms(forms.Form):
 
 class CadastroForms(forms.Form):
     nome_cadastro=forms.CharField(
-        label='Nome de Cadastro', 
+        label='Usuário', 
         required=True, 
         max_length=100,
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control',
-                'placeholder': 'Ex.: João Silva',
+                'placeholder': 'Ex.: joaosilva14',
             }
         )
     )
