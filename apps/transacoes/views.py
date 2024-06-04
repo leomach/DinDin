@@ -160,7 +160,7 @@ def criar_transacao_parcelada(request):
                 messages.error(request, f'Erro ao criar transação: {e}')
 
     else:
-        form = TransacaoForm()
+        form = TransacaoParceladaForm()
 
     contas = Conta.objects.filter(usuario=request.user)
     categorias = Categoria.objects.filter(usuario=request.user)

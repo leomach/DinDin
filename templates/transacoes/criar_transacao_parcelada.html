@@ -1,0 +1,22 @@
+{% extends "shared/base.html"%}
+{% load static %}
+{% block content %}
+    <section class="criar-transacao">
+        <div class="title">
+            <h1>Nova transação parcelada</h1>
+        </div>
+        <div class="form">
+            <form action="{% url 'criar_transacao' %}" method="POST">
+                {% csrf_token %}
+                {% for field in form.visible_fields %}
+                <div class="campo">
+                    <label for="{{ field.id_for_label }}">{{field.label}}</label>
+                    {{ field }}
+                </div>
+                {% endfor %}
+                <button type="submit" id="btnSubmit" class="btn">Salvar</button>
+            </form>
+        </div>
+    </section>
+    <script src="{% static '/scripts/filtro_categorias.js' %}"></script>
+{% endblock %}

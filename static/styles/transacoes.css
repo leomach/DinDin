@@ -31,6 +31,7 @@
     background-color: #0b8351;
     width: max-content;
     padding: 4px 12px;
+    margin: 10px 0;
     border: solid 1px transparent;
     transition: all 0.3s;
 }
@@ -39,6 +40,25 @@
     background-color: transparent;
     border: solid 1px #0b8351;
     color: #0b8351;
+    transition: all 0.3s;
+}
+
+.transacoes .title .btn-parcelada {
+    font-size: small;
+    font-weight: 600;
+    text-decoration: none;
+    color: aliceblue;
+    background-color: #0b4d83;
+    width: max-content;
+    padding: 4px 12px;
+    border: solid 1px transparent;
+    transition: all 0.3s;
+}
+
+.transacoes .title .btn-parcelada:hover {
+    background-color: transparent;
+    border: solid 1px #0b4d83;
+    color: #0b4d83;
     transition: all 0.3s;
 }
 
@@ -105,6 +125,7 @@
 }
 
 @media screen and (max-width: 768px) {
+
     .transacoes .transacoes-list .tabela-transacoes {
                 background-color: transparent;
                 border-radius: 0;
