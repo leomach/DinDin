@@ -96,6 +96,63 @@ def criar_transacao(request):
     })
 
 @login_required
+def criar_transacao_parcelada(request):
+    """
+    View para criar uma nova transação parcelada.
+    """
+    if request.method == 'POST':
+        form = TransacaoForm(request.POST)
+
+        if form.is_valid():
+            usuario = request.user
+            conta = get_object_or_404(Conta, pk=form.cleaned_data['conta'].id, usuario=usuario)
+            data = form.cleaned_data['data']
+            descricao = form.cleaned_data['descricao']
+            valor = form.cleaned_data['valor']
+            tipo = form.cleaned_data['tipo']
+            categoria = form.cleaned_data['categoria']
+            subcategoria = form.cleaned_data['subcategoria']
+
+            try:
+                if tipo == 'D':
+                    conta.saldo_atual -= valor
+                else:
+                    conta.saldo_atual += valor
+
+                conta.save()
+
+                Transacao.objects.create(
+                    usuario=usuario,
+                    conta=conta,
+                    data=data,
+                    descricao=descricao,
+                    valor=valor,
+                    tipo=tipo,
+                    categoria=categoria,
+                    subcategoria=subcategoria
+                )
+
+                messages.success(request, 'Transação criada com sucesso!')
+                return redirect('listar_transacoes')
+
+            except Exception as e:
+                messages.error(request, f'Erro ao criar transação: {e}')
+
+    else:
+        form = TransacaoForm()
+
+    contas = Conta.objects.filter(usuario=request.user)
+    categorias = Categoria.objects.filter(usuario=request.user)
+    subcategorias = Subcategoria.objects.filter(usuario=request.user)
+
+    return render(request, 'transacoes/criar_transacao.html', {
+        'form': form,
+        'contas': contas,
+        'categorias': categorias,
+        'subcategorias': subcategorias,
+    })
+
+@login_required
 def editar_transacao(request, transacao_pk):
     """
     View para editar uma transacao específica.

@@ -2,6 +2,62 @@ from django import forms
 from .models import Transacao
 from ..subcategorias.models import Subcategoria
 
+class TransacaoParceladaForm(forms.ModelForm):
+    """Formulário para transações parceladas."""
+
+    class Meta:
+        model = Transacao
+        fields = [
+            'data',
+            'descricao',
+            'parcelas',
+            'valor_total',
+            'conta',
+            'categoria',
+            'subcategoria',
+        ]
+        exclude = ['id', 'usuario']
+        labels = {
+            'data': 'Data da compra',
+            'descricao': 'Descrição',
+            'parcelas': 'Quantidade de parcelas',
+            'valor_total': 'Valor total da compra',
+            'conta': 'Conta',
+            'categoria': 'Categoria',
+            'subcategoria': 'Subcategoria',
+        }
+        widgets = {
+            'data': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'descricao': forms.TextInput(attrs={'class': 'form-control'}),
+            'parcelas': forms.NumberInput(attrs={'class': 'form-control'}),
+            'valor_total': forms.NumberInput(attrs={'class': 'form-control'}),
+            'conta': forms.Select(attrs={'class': 'form-control'}),
+            'categoria': forms.Select(attrs={'class': 'form-control', 'id': 'field-categoria'}),
+            'subcategoria': forms.Select(attrs={'class': 'form-control', 'id': 'field-subcategoria'}),
+        }
+
+    def clean_valor(self):
+        """
+        Valida o campo 'valor'.
+        """
+        valor = self.cleaned_data['valor_total']
+
+        if valor <= 0:
+            raise forms.ValidationError('O valor da transação deve ser maior que zero.')
+
+        return valor
+    
+    def clean_categoria(self):
+        """
+        Aplica filtro por categoria no campo 'subcategoria'.
+        """
+        categoria_selecionada = self.cleaned_data['categoria']
+        subcategorias = Subcategoria.objects.filter(categoria=categoria_selecionada)
+
+        # Atualizar o campo 'subcategoria' com as opções filtradas
+        self.fields['subcategoria'].queryset = subcategorias
+        return categoria_selecionada
+
 class TransacaoForm(forms.ModelForm):
     """Formulário para transações."""
 
