@@ -1,12 +1,12 @@
 from django import forms
-from .models import Transacao
+from .models import Transacao, TransacaoParcelada
 from ..subcategorias.models import Subcategoria
 
 class TransacaoParceladaForm(forms.ModelForm):
     """Formulário para transações parceladas."""
 
     class Meta:
-        model = Transacao
+        model = TransacaoParcelada
         fields = [
             'data',
             'descricao',
