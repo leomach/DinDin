@@ -1,89 +1,459 @@
-@media screen and (min-width: 769px) {
-    .index {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-    }
-    
-    .index .topo {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .index .topo .title {
-        display: flex;
-        flex-direction: column;
-        width: 80%;
-    }
-    
-    .index .topo .title h1 {
-        font-size: xx-large;
-    }
-    
+.index {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
-@media screen and (max-width: 768px){
-    .index {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-    }
-    
-    .index .topo {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        padding: 25px 0 10px 0;
-        border-radius: 0 0 10px 10px;
-        box-shadow: 0px 8px 10px #0000006e;
+.index .topo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
+    padding: 25px 0 10px 0;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0px 8px 10px #0000006e;
 
-        background-color: #053d31;
+    background-color: #053d31;
+}
+
+.index .topo .title {
+    display: none;
+}
+
+.index .topo .titulo p {
+    color: #e3f7e8;
+    color: #fff;
+    font-size: large;
+    font-weight: 600;
+    padding-bottom: 10px;
+}
+
+.index .topo .gerais {
+    color: #fff;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+.index .topo .gerais .info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 33%;
+}
+
+.index .topo .gerais .info-principal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 33%;
+}
+
+.index .topo .gerais .info h4 {
+    font-size: small;
+    opacity: 60%;
+}
+
+.index .topo .gerais .info p {
+    opacity: 60%;
+    font-size: small;
+}
+
+.index .mes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 30%;
+    margin: 30px 0;
+    padding: 25px 0 10px 0;
+    border-radius: 10px;
+
+    background-color: #fff;
+}
+
+.index .mes .titulo {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    justify-content: start;
+    width: 80%;
+
+
+}
+
+.index .mes .titulo h4 {
+    text-align: left;
+    font-size: large;
+    font-weight: 500;
+}
+
+.index .mes .cards {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px 0 10px 0;
+}
+
+.index .mes .cards .card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 10px;
+    width: 100%;
+}
+
+.index .mes .cards .card .icone {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.index .mes .cards .card .icone-receita {
+    padding: 5px 12px;
+    width: max-content;
+    background-color: #074e3f;
+    border-radius: 25px;
+    color: #fff;
+}
+
+.index .mes .cards .card .icone-despesa {
+    padding: 5px 12px;
+    background-color: #4e0707;
+    border-radius: 25px;
+    color: #fff;
+    width: max-content;
+}
+
+.index .mes .cards .card .titulos,
+.index .mes .cards .card .valor,
+.index .mes .cards .card .icone {
+    width: 33%;
+}
+
+.index .mes .cards .card h4 {
+    font-size: medium;
+    font-weight: 500;
+    text-align: left;
+}
+
+.index .mes .cards .card h3 {
+    font-size: small;
+    font-weight: 500;
+    color: #949494;
+    text-align: left;
+}
+
+
+    .index .transacoes-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 90%;
+        gap: 20px;
     }
-    
-    .index .topo .title {
-        display: none;
+
+    .index .transacoes-list .tabela-transacoes {
+        width: 100%;
+
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+
     }
-    
-    .index .topo .titulo p {
-        color: #e3f7e8;
-        color: #fff;
-        font-size: large;
+
+    .index .transacoes-list .tabela-transacoes tr td {
+        text-align: center;
+    }
+
+    .index .transacoes-list .tabela-transacoes tr td a:first-child {
+        text-decoration: none;
+        cursor: pointer;
         font-weight: 600;
-    }
-    
-    .index .topo .gerais {
         color: #fff;
+        padding: 2px 6px;
+        border-radius: 7px;
+        background-color: #836d0b;
+        transition: all 0.3s;
+        opacity: 100%;
+    }
+
+    .index .transacoes-list .tabela-transacoes tr td a:last-child {
+        text-decoration: none;
+        cursor: pointer;
+        font-weight: 600;
+        color: #fff;
+        padding: 2px 8px;
+        border-radius: 7px;
+        background-color: #830b0b;
+        transition: all 0.3s;
+        opacity: 100%;
+    }
+
+    .index .transacoes-list .tabela-transacoes tr td a:first-child:hover {
+        opacity: 80%;
+        transition: all 0.3s;
+    }
+
+    .index .transacoes-list .tabela-transacoes tr td a:last-child:hover {
+        opacity: 80%;
+        transition: all 0.3s;
+    }
+
+    .index .transacoes-list .tabela-transacoes tr td:nth-child(7) {
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: space-around;
-        flex-wrap: nowrap;
-    }
-    .index .topo .gerais .info{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
     }
 
-    .index .topo .gerais .info-principal{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-    }
 
-    .index .topo .gerais .info h4{
-        font-size: small;
+    @media screen and (max-width: 768px) {
+        .index {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .index .topo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 25px 0 10px 0;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0px 8px 10px #0000006e;
+
+            background-color: #053d31;
+        }
+
+        .index .topo .title {
+            display: none;
+        }
+
+        .index .topo .titulo p {
+            color: #e3f7e8;
+            color: #fff;
+            font-size: large;
+            font-weight: 600;
+            padding-bottom: 10px;
+        }
+
+        .index .topo .gerais {
+            color: #fff;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: nowrap;
+            width: 100%;
+        }
+
+        .index .topo .gerais .info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 33%;
+        }
+
+        .index .topo .gerais .info-principal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 33%;
+        }
+
+        .index .topo .gerais .info h4 {
+            font-size: small;
+            opacity: 60%;
+        }
+
+        .index .topo .gerais .info p {
+            opacity: 60%;
+            font-size: small;
+        }
+
+        .index .mes {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 90%;
+            margin: 30px 0;
+            padding: 25px 0 10px 0;
+            border-radius: 10px;
+
+            background-color: #fff;
+        }
+
+        .index .mes .titulo {
+            display: flex;
+            flex-direction: row;
+            align-items: start;
+            justify-content: start;
+            width: 80%;
+
+
+        }
+
+        .index .mes .titulo h4 {
+            text-align: left;
+            font-size: large;
+            font-weight: 500;
+        }
+
+        .index .mes .cards {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 10px 0 10px 0;
+        }
+
+        .index .mes .cards .card {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 10px;
+            width: 100%;
+        }
+
+        .index .mes .cards .card .icone {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .index .mes .cards .card .icone-receita {
+            padding: 5px 12px;
+            width: max-content;
+            background-color: #074e3f;
+            border-radius: 25px;
+            color: #fff;
+        }
+
+        .index .mes .cards .card .icone-despesa {
+            padding: 5px 12px;
+            background-color: #4e0707;
+            border-radius: 25px;
+            color: #fff;
+            width: max-content;
+        }
+
+        .index .mes .cards .card .titulos,
+        .index .mes .cards .card .valor,
+        .index .mes .cards .card .icone {
+            width: 33%;
+        }
+
+        .index .mes .cards .card h4 {
+            font-size: medium;
+            font-weight: 500;
+            text-align: left;
+        }
+
+        .index .mes .cards .card h3 {
+            font-size: small;
+            font-weight: 500;
+            color: #949494;
+            text-align: left;
+        }
+
+        .index .transacoes-list .tabela-transacoes {
+            background-color: transparent;
+            border-radius: 0;
+            padding: 0;
+
+        }
+
+        .index .transacoes-list .tabela-transacoes thead {
+            display: none;
+        }
+
+        .index .transacoes-list .tabela-transacoes tbody {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+
+        }
+
+        .index .transacoes-list .tabela-transacoes tr {
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            justify-content: center;
+            width: 100%;
+
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .index .transacoes-list .tabela-transacoes tr {
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            justify-content: center;
+            font-size: smaller;
+        }
+
+        .index .transacoes-list .tabela-transacoes tr td {
+            padding: 0;
+            margin: 0;
+        }
+
+        .index .transacoes-list .tabela-transacoes tr td:nth-child(1) {
+            color: #919191;
+        }
+
+        .index .transacoes-list .tabela-transacoes tr td:nth-child(2) {
+            font-weight: 600;
+            color: #0b8351;
+            font-size: medium;
+            text-align: left;
+        }
+
+        .index .transacoes-list .tabela-transacoes tr td:nth-child(3) {
+            font-size: medium;
+        }
+
+        .index .transacoes-list .tabela-transacoes tr td:nth-child(5),
+        .index .transacoes-list .tabela-transacoes tr td:nth-child(6) {
+            display: none;
+        }
+
+        .index .transacoes-list .tabela-transacoes tr td:nth-child(7) {
+            display: none;
+            margin-top: 5px;
+            width: 100%;
+        }
     }
-}

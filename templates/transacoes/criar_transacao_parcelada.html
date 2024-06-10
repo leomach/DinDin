@@ -6,7 +6,7 @@
             <h1>Nova transação parcelada</h1>
         </div>
         <div class="form">
-            <form action="{% url 'criar_transacao' %}" method="POST">
+            <form action="{% url 'criar_transacao_parcelada' %}" method="POST">
                 {% csrf_token %}
                 {% for field in form.visible_fields %}
                 <div class="campo">

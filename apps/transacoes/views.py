@@ -8,6 +8,8 @@ from ..categorias.models import Categoria
 from ..subcategorias.models import Subcategoria
 from .forms import TransacaoForm, TransacaoParceladaForm
 from django.core.paginator import Paginator
+import datetime
+from dateutil.relativedelta import *
 
 def listar_transacoes(request):
     """
@@ -109,55 +111,57 @@ def criar_transacao_parcelada(request):
             data = form.cleaned_data['data']
             descricao = form.cleaned_data['descricao']
             valor = form.cleaned_data['valor_total']
-            parcelas = form.cleaned_data['parcelas', None]
+            parcelas = form.cleaned_data['parcelas']
             tipo = form.cleaned_data['tipo']
             categoria = form.cleaned_data['categoria']
             subcategoria = form.cleaned_data['subcategoria']
 
-            try:
-                if tipo == 'D':
-                    conta.saldo_atual -= valor
-                else:
-                    conta.saldo_atual += valor
+            #try:
+            if tipo == 'D':
+                conta.saldo_atual -= valor
+            else:
+                conta.saldo_atual += valor
 
-                conta.save()
-                
-                if not parcelas:
-                    parcelas = 0
-                
-                
-                try:
-                    trans_par = TransacaoParcelada.objects.create(
-                        usuario=usuario,
-                        conta=conta,
-                        data=data,
-                        descricao=descricao,
-                        valor_total=valor,
-                        parcelas=parcelas,
-                        tipo=tipo,
-                        categoria=categoria,
-                        subcategoria=subcategoria
+            conta.save()
+            
+            
+            #try:
+            trans_par = TransacaoParcelada.objects.create(
+                usuario=usuario,
+                conta=conta,
+                data=data,
+                descricao=descricao,
+                valor_total=valor,
+                parcelas=parcelas,
+                tipo=tipo,
+                categoria=categoria,
+                subcategoria=subcategoria
+            )
+
+            if trans_par.id:
+                #try:
+                for i in range(1, int(parcelas) + 1):
+                    Parcela.objects.create(
+                        transacao_parcelada=get_object_or_404(TransacaoParcelada, pk=trans_par.id, usuario=usuario),
+                        numero_parcela=i,
+                        valor_parcela=valor / parcelas,
+                        data=data + relativedelta(months=i)
                     )
+                    messages.success(request, f'Parcela {i} criada com sucesso!')
 
-                    if TransacaoParcelada.objects.get(id=trans_par.id) is None:
-                        messages.error(request, f'Erro ao criar transação: {e}')
-                        return redirect('listar_transacoes')
-                    
-                    for i in range(1, parcelas + 1):
-                        Parcela.objects.create(
-                            transacao_parcelada=get_object_or_404(TransacaoParcelada, pk=trans_par, usuario=usuario),
-                            numero=i,
-                            valor=valor / parcelas
-                        )
-
-                    messages.success(request, 'Transação criada com sucesso!')
-                    return redirect('listar_transacoes')
+                messages.success(request, 'Transação criada com sucesso!')
+                return redirect('listar_transacoes')
                 
-                except Exception as e:
-                    messages.error(request, f'Erro ao criar transação: {e}')
+                # except Exception as e:
+                #     messages.error(request, f'Erro ao criar parcelas: {e}')
+                #     return redirect('listar_transacoes')
 
-            except Exception as e:
-                messages.error(request, f'Erro ao criar transação: {e}')
+        
+            # except Exception as e:
+            #     messages.error(request, f'Erro ao criar transação: {e}')
+
+            # except Exception as e:
+            #     messages.error(request, f'Erro ao criar transação: {e}')
 
     else:
         form = TransacaoParceladaForm()

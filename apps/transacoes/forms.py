@@ -10,6 +10,7 @@ class TransacaoParceladaForm(forms.ModelForm):
         fields = [
             'data',
             'descricao',
+            'tipo',
             'parcelas',
             'valor_total',
             'conta',
@@ -20,6 +21,7 @@ class TransacaoParceladaForm(forms.ModelForm):
         labels = {
             'data': 'Data da transação',
             'descricao': 'Descrição',
+            'tipo': 'Tipo',
             'parcelas': 'Quantidade de parcelas',
             'valor_total': 'Valor total da transação',
             'conta': 'Conta',
@@ -29,6 +31,7 @@ class TransacaoParceladaForm(forms.ModelForm):
         widgets = {
             'data': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'descricao': forms.TextInput(attrs={'class': 'form-control'}),
+            'tipo': forms.Select(attrs={'class': 'form-control'}),
             'parcelas': forms.NumberInput(attrs={'class': 'form-control'}),
             'valor_total': forms.NumberInput(attrs={'class': 'form-control'}),
             'conta': forms.Select(attrs={'class': 'form-control'}),

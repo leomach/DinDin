@@ -1,5 +1,5 @@
 #sidebar {
-    position: absolute;
+    position: fixed;
     left: 0px;
     display: flex;
     flex-direction: column;
@@ -104,31 +104,19 @@
 
 @media (max-width: 768px) {
     #sidebar{
-        width: max-content;
-    }
-    #sidebar_content {
-        width: 100%;
-    }
-    #side-items {
-        width: 40px;
+        min-width: 30px;
     }
     .side-item {
         padding: 14px 5px;
         display: flex;
         justify-content: center;
         align-items: center;
-        width: max-content;
     }
     .side-item a {
-        width: max-content;
         align-self: center;
     }
     .side-item a i {
-        width: max-content;
         height: 20px;
-    }
-    #logout {
-        width: 100%;
     }
     #logout_btn {
         padding: 14px 5px;
@@ -137,8 +125,11 @@
         align-items: center;
         width: 100%;
     }
+    #logout_btn span {
+        display: none;
+    }
     #logout_btn i {
-        width: max-content;
+        width: 20px;
         height: 20px;
     }
 }
