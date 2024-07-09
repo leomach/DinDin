@@ -13,6 +13,16 @@
                         <h3>{{ conta.nome }}</h3>
                         <p>{{ conta.descricao }}</p>
                     </div>
+                    <div class="limite-container">
+                        <div>
+                            <h5>Limite</h5>
+                            <p>{{ conta.limite }}</p>
+                        </div>
+                        <div>
+                            <h5>Limite usado</h5>
+                            <p>{{ conta.limite_atual }}</p>
+                        </div>
+                    </div>
                     <div class="acoes">
                         <form action="{% url 'editar_conta' conta.id %}" method="POST">
                             {% csrf_token %}

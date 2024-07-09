@@ -59,6 +59,24 @@
     gap: 5px;
 }
 
+.contas .contas-list .conta .limite-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    margin-top: 10px;
+    gap: 20px;
+}
+
+.contas .contas-list .conta .limite-container div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    background-color: rgb(236, 236, 236);
+}
+
 .contas .contas-list .conta .acoes {
     display: flex;
     flex-direction: row;

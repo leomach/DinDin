@@ -37,8 +37,8 @@
                     <h3>Mês anterior</h3>
                 </div>
                 <div class="valor">
-                    <h4>R${{receitas_mes_atual}}</h4>
-                    <h3>R${{receitas_mes_anterior}}</h3>
+                    <h4>R${{transacoes_receitas_mes_atual}}</h4>
+                    <h3>R${{transacoes_receitas_mes_anterior}}</h3>
                 </div>
             </div>
             <div class="card">
@@ -77,7 +77,12 @@
                         <td>{{ transacao.data|date:"d/m/Y" }}</td>
                         <td>{{ transacao.descricao }}</td>
                         <td>R$ {{ transacao.valor|floatformat:2 }}</td>
-                        <td>{{ transacao.get_tipo_display }}</td>
+                        {{ transacao }}
+                        {% if tipo in transacao %}
+                            <td>{{ transacao.get_tipo_display }}</td>
+                        {% else %}
+                            <td>Despesa</td>
+                        {% endif %}
                         <td>{{ transacao.categoria.nome }}</td>
                         <td>{{ transacao.conta.nome }}</td>
                         <td>
@@ -90,11 +95,11 @@
         </table>
         <div class="paginacao">
             {% if page.has_previous %}
-                <a href="{% url 'listar_transacoes'%}?page={{ page.previous_page_number }}" class="btn">Anterior</a>
+                <a href="{% url 'index'%}?page={{ page.previous_page_number }}" class="btn">Anterior</a>
             {% endif %}
             <p>Página {{ page.number }} de {{ page.paginator.num_pages }}</p>
             {% if page.has_next %}
-                <a href="{% url 'listar_transacoes'%}?page={{ page.next_page_number }}" class="btn">Próximo</a>
+                <a href="{% url 'index'%}?page={{ page.next_page_number }}" class="btn">Próximo</a>
             {% endif %}
         </div>
     </div>

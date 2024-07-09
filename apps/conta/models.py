@@ -9,6 +9,8 @@ class Conta(models.Model):
     descricao = models.CharField(max_length=255, blank=False, null=False)
     saldo_inicial = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     saldo_atual = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    limite = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    limite_atual = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     data_criacao = models.DateTimeField(auto_now_add=True)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 

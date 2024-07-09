@@ -16,7 +16,17 @@ def listar_transacoes(request):
     View para listar as transações do usuário logado.
     """
     usuario = request.user
+    
+    # Busca as transações e transações parceladas separadamente
     transacoes = Transacao.objects.filter(usuario=usuario)
+    transacoes_parceladas = TransacaoParcelada.objects.filter(usuario=usuario)
+
+    def get_transacoes_e_parceladas(transacoes, transacoes_parceladas):
+        # Combina as listas e ordena por data
+        transacoes_e_parceladas = sorted(list(transacoes) + list(transacoes_parceladas), key=lambda obj: obj.data)
+        return transacoes_e_parceladas
+    
+    transacoes_e_parceladas = get_transacoes_e_parceladas(transacoes=transacoes, transacoes_parceladas=transacoes_parceladas)
 
     # Calcula o saldo total das contas
     saldo_total_contas = Conta.objects.filter(usuario=usuario).aggregate(saldo_total=Sum('saldo_atual'))['saldo_total'] or 0
@@ -28,7 +38,7 @@ def listar_transacoes(request):
     diferenca_saldo = saldo_total_contas - saldo_total_transacoes
 
     # Faz a paginação das transações
-    transacoes_paginator = Paginator(transacoes, 10)
+    transacoes_paginator = Paginator(transacoes_e_parceladas, 10)
     page_num = request.GET.get('page')
     page = transacoes_paginator.get_page(page_num)
 
@@ -112,18 +122,16 @@ def criar_transacao_parcelada(request):
             descricao = form.cleaned_data['descricao']
             valor = form.cleaned_data['valor_total']
             parcelas = form.cleaned_data['parcelas']
-            tipo = form.cleaned_data['tipo']
             categoria = form.cleaned_data['categoria']
             subcategoria = form.cleaned_data['subcategoria']
 
             #try:
-            if tipo == 'D':
-                conta.saldo_atual -= valor
-            else:
-                conta.saldo_atual += valor
-
+            if conta.limite <= 0 or conta.limite_atual - valor >= conta.limite:
+                messages.error(request, f'O limite da conta {conta.nome} não permite essa transação!')
+                return redirect('listar_transacoes')
+            conta.saldo_atual -= valor
+            conta.limite_atual += valor
             conta.save()
-            
             
             #try:
             trans_par = TransacaoParcelada.objects.create(
@@ -133,7 +141,6 @@ def criar_transacao_parcelada(request):
                 descricao=descricao,
                 valor_total=valor,
                 parcelas=parcelas,
-                tipo=tipo,
                 categoria=categoria,
                 subcategoria=subcategoria
             )

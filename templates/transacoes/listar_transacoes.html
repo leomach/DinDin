@@ -26,7 +26,11 @@
                             <td>{{ transacao.data|date:"d/m/Y" }}</td>
                             <td>{{ transacao.descricao }}</td>
                             <td>R$ {{ transacao.valor|floatformat:2 }}</td>
-                            <td>{{ transacao.get_tipo_display }}</td>
+                            {% if tipo in transacao %}
+                                <td>{{ transacao.get_tipo_display }}</td>
+                            {% else %}
+                                <td>Despesa</td>
+                            {% endif %}
                             <td>{{ transacao.categoria.nome }}</td>
                             <td>{{ transacao.conta.nome }}</td>
                             <td>
