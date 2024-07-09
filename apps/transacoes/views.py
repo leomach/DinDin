@@ -27,6 +27,7 @@ def listar_transacoes(request):
         return transacoes_e_parceladas
     
     transacoes_e_parceladas = get_transacoes_e_parceladas(transacoes=transacoes, transacoes_parceladas=transacoes_parceladas)
+    transacoes_e_parceladas.sort(key=lambda x: x.data, reverse=True)
 
     # Calcula o saldo total das contas
     saldo_total_contas = Conta.objects.filter(usuario=usuario).aggregate(saldo_total=Sum('saldo_atual'))['saldo_total'] or 0
@@ -67,6 +68,8 @@ def criar_transacao(request):
             tipo = form.cleaned_data['tipo']
             categoria = form.cleaned_data['categoria']
             subcategoria = form.cleaned_data['subcategoria']
+
+            print(f"Value in tipo: {tipo}")
 
             try:
                 if tipo == 'D':

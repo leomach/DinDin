@@ -65,6 +65,7 @@ def index(request):
     transacoes_despesas_mes_anterior = transacoes_mes_anterior.filter(tipo='D').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
     total_parcelas_mes_anterior = parcelas_mes_anterior.aggregate(saldo_total=Sum('valor_parcela'))['saldo_total'] or 0
     despesas_mes_anterior = transacoes_despesas_mes_anterior + total_parcelas_mes_anterior
+    print(despesas_mes_anterior)
 
     saldo_mes_anterior = transacoes_receitas_mes_anterior - despesas_mes_anterior
     saldo_ano_anterior = receitas_ano_anterior - despesas_ano_anterior
@@ -104,6 +105,7 @@ def index(request):
         'transacoes_despesas_mes_anterior': transacoes_despesas_mes_anterior,
         'saldo_mes_anterior': saldo_mes_anterior,
         'saldo_ano_anterior': saldo_ano_anterior,
+        'despesas_mes_anterior': despesas_mes_anterior,
 
         'transacoes_mes_atual': transacoes_mes_atual,
         'usuario': usuario,

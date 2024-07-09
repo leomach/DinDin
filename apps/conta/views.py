@@ -54,24 +54,28 @@ def editar_conta(request, conta_id):
     conta = get_object_or_404(Conta, pk=conta_id, usuario=request.user)
 
     if request.method == 'POST':
-        nome = request.POST['nome']
-        descricao = request.POST['descricao']
-        saldo_atual = request.POST['saldo_atual']
+        form = ContaForms(request.POST, instance=conta)
+        if form.is_valid():
+            nome = form.cleaned_data['nome']
+            descricao = form.cleaned_data['descricao']
+            saldo_inicial = form.cleaned_data['saldo_inicial']
 
-        try:
-            saldo_atual = float(saldo_atual)
-        except ValueError:
-            messages.error(request, 'Saldo atual inválido.')
-            return redirect('editar_conta', pk=conta.pk)
+            try:
+                saldo_inicial = float(saldo_inicial)
+            except ValueError:
+                messages.error(request, 'Saldo atual inválido.')
+                return redirect('editar_conta', pk=conta.pk)
 
-        conta.nome = nome
-        conta.descricao = descricao
-        conta.saldo_atual = saldo_atual
-        conta.save()
-        messages.success(request, 'Conta atualizada com sucesso!')
-        return redirect('contas')
+            conta.nome = nome
+            conta.descricao = descricao
+            conta.saldo_inicial = saldo_inicial
+            conta.save()
+            messages.success(request, 'Conta atualizada com sucesso!')
+            return redirect('contas')
+    else:
+        form = ContaForms(instance=conta)
 
-    return render(request, 'contas/editar_conta.html', {'conta': conta})
+    return render(request, 'contas/editar_conta.html', {'form': form, 'conta': conta})
 
 @login_required
 def excluir_conta(request, conta_id):

@@ -77,9 +77,8 @@
                         <td>{{ transacao.data|date:"d/m/Y" }}</td>
                         <td>{{ transacao.descricao }}</td>
                         <td>R$ {{ transacao.valor|floatformat:2 }}</td>
-                        {{ transacao }}
-                        {% if tipo in transacao %}
-                            <td>{{ transacao.get_tipo_display }}</td>
+                        {% if transacao.tipo == "R" %}
+                            <td>Receita</td>
                         {% else %}
                             <td>Despesa</td>
                         {% endif %}
