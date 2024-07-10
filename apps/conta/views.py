@@ -28,21 +28,33 @@ def criar_conta(request):
     View para criar uma nova conta para o usuário logado.
     """
     if request.method == 'POST':
-        nome = request.POST['nome']
-        descricao = request.POST['descricao']
-        saldo_inicial = request.POST['saldo_inicial']
+        form = ContaForms(request.POST)
 
-        try:
-            saldo_inicial = float(saldo_inicial)
-        except ValueError:
-            messages.error(request, 'Saldo inicial inválido.')
+        if form.is_valid():
+            nome = form.cleaned_data['nome']
+            descricao = form.cleaned_data['descricao']
+            saldo_inicial = form.cleaned_data['saldo_inicial']
+            limite = form.cleaned_data['limite']
+
+            try:
+                saldo_inicial = float(saldo_inicial)
+            except ValueError:
+                messages.error(request, 'Saldo inicial inválido.')
+                return redirect('contas')
+
+            usuario = request.user
+
+            Conta.objects.create(
+                usuario=usuario,
+                nome=nome,
+                descricao=descricao,
+                saldo_atual=saldo_inicial,
+                limite=limite,
+                limite_atual=limite
+            )
+
+            messages.success(request, 'Conta criada com sucesso!')
             return redirect('contas')
-
-        usuario = request.user
-        conta = Conta.objects.create(usuario=usuario, nome=nome, descricao=descricao, saldo_atual=saldo_inicial)
-        conta.save()
-        messages.success(request, 'Conta criada com sucesso!')
-        return redirect('contas')
 
     return render(request, 'contas/criar_conta.html')
 
@@ -59,6 +71,7 @@ def editar_conta(request, conta_id):
             nome = form.cleaned_data['nome']
             descricao = form.cleaned_data['descricao']
             saldo_inicial = form.cleaned_data['saldo_inicial']
+            limite = form.cleaned_data['limite']
 
             try:
                 saldo_inicial = float(saldo_inicial)
@@ -69,6 +82,7 @@ def editar_conta(request, conta_id):
             conta.nome = nome
             conta.descricao = descricao
             conta.saldo_inicial = saldo_inicial
+            conta.limite = limite
             conta.save()
             messages.success(request, 'Conta atualizada com sucesso!')
             return redirect('contas')

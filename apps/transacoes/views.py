@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from .models import Transacao, TransacaoParcelada, Parcela
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -50,6 +50,40 @@ def listar_transacoes(request):
         'diferenca_saldo': diferenca_saldo,
     })
 
+@login_required
+def listar_parcelas(request):
+    usuario = request.user
+
+    parcelas = Parcela.objects.filter(usuario=usuario)
+    parcelas_decrescente = sorted(parcelas, key=lambda x: x.data, reverse=False)
+
+    parcelas_paginator = Paginator(parcelas_decrescente, 10)
+    page_num = request.GET.get('page')
+    page = parcelas_paginator.get_page(page_num)
+
+    return render(request, 'transacoes/listar_parcelas.html', {
+        'page': page,
+    })
+
+@login_required
+def toggle_status_parcela(request, parcela_id):
+    parcela = get_object_or_404(Parcela, pk=parcela_id, usuario=request.user)
+    conta = get_object_or_404(Conta, pk=parcela.transacao_parcelada.conta.id, usuario=request.user)
+
+    if parcela.status == 1:
+        valor_do_limite = conta.limite_atual + parcela.valor_parcela
+        conta.limite_atual = valor_do_limite
+    else:
+        valor_do_limite = conta.limite_atual - parcela.valor_parcela
+        conta.limite_atual = valor_do_limite
+
+    parcela.status = not parcela.status
+    parcela.save()
+    conta.save()
+
+    messages.success(request, 'Status da parcela alterado com sucesso.')
+    return redirect('listar_parcelas')
+
 
 @login_required
 def criar_transacao(request):
@@ -69,13 +103,13 @@ def criar_transacao(request):
             categoria = form.cleaned_data['categoria']
             subcategoria = form.cleaned_data['subcategoria']
 
-            print(f"Value in tipo: {tipo}")
-
             try:
                 if tipo == 'D':
-                    conta.saldo_atual -= valor
+                    valor_da_conta = conta.saldo_atual - valor
+                    conta.saldo_atual = valor_da_conta
                 else:
-                    conta.saldo_atual += valor
+                    valor_da_conta = conta.saldo_atual + valor
+                    conta.saldo_atual = valor_da_conta
 
                 conta.save()
 
@@ -129,11 +163,13 @@ def criar_transacao_parcelada(request):
             subcategoria = form.cleaned_data['subcategoria']
 
             #try:
-            if conta.limite <= 0 or conta.limite_atual - valor >= conta.limite:
+            if conta.limite <= 0 or conta.limite_atual - valor < 0:
                 messages.error(request, f'O limite da conta {conta.nome} não permite essa transação!')
                 return redirect('listar_transacoes')
-            conta.saldo_atual -= valor
-            conta.limite_atual += valor
+            valor_da_conta = conta.saldo_atual - valor
+            conta.saldo_atual = valor_da_conta
+            valor_do_limite = conta.limite_atual - valor
+            conta.limite_atual = valor_do_limite
             conta.save()
             
             #try:
@@ -155,7 +191,8 @@ def criar_transacao_parcelada(request):
                         transacao_parcelada=get_object_or_404(TransacaoParcelada, pk=trans_par.id, usuario=usuario),
                         numero_parcela=i,
                         valor_parcela=valor / parcelas,
-                        data=data + relativedelta(months=i)
+                        data=data + relativedelta(months=i),
+                        usuario=usuario
                     )
                     messages.success(request, f'Parcela {i} criada com sucesso!')
 
@@ -193,12 +230,13 @@ def editar_transacao(request, transacao_pk):
     View para editar uma transacao específica.
     """
     transacao = get_object_or_404(Transacao, pk=transacao_pk, usuario=request.user)
+    usuario = request.user
 
     if request.method == 'POST':
         form = TransacaoForm(request.POST, instance=transacao)
 
         if form.is_valid():
-            conta = form.cleaned_data['conta']
+            conta = get_object_or_404(Conta, pk=form.cleaned_data['conta'].id, usuario=usuario)
             data = form.cleaned_data['data']
             descricao = form.cleaned_data['descricao']
             valor = form.cleaned_data['valor']
@@ -212,9 +250,11 @@ def editar_transacao(request, transacao_pk):
 
                 # Atualiza o saldo da conta de acordo com o novo valor e tipo da transacao
                 if tipo == 'D':
-                    conta.saldo_atual -= valor - saldo_antigo
+                    valor_da_conta = conta.saldo_atual - saldo_antigo - valor
+                    conta.saldo_atual = valor_da_conta
                 else:
-                    conta.saldo_atual += valor - saldo_antigo
+                    valor_da_conta = conta.saldo_atual - saldo_antigo + valor
+                    conta.saldo_atual = valor_da_conta
 
                 conta.save()
 
@@ -259,9 +299,11 @@ def excluir_transacao(request, transacao_pk):
     try:
         # Atualiza o saldo da conta após a exclusão da transacao
         if transacao.tipo == 'D':
-            transacao.conta.saldo_atual += transacao.valor
+            valor_da_conta = transacao.conta.saldo_atual + transacao.valor
+            transacao.conta.saldo_atual = valor_da_conta
         else:
-            transacao.conta.saldo_atual -= transacao.valor
+            valor_da_conta = transacao.conta.saldo_atual - transacao.valor
+            transacao.conta.saldo_atual = valor_da_conta
 
         transacao.conta.save()
         transacao.delete()
@@ -271,3 +313,28 @@ def excluir_transacao(request, transacao_pk):
 
     except Exception as e:
         messages.error(request, f'Erro ao excluir transação: {e}')
+
+@login_required
+def excluir_transacao_parcelada(request, transacao_pk):
+    """
+    View para excluir uma transacao específica.
+    """
+    transacao = get_object_or_404(TransacaoParcelada, pk=transacao_pk, usuario=request.user)
+
+    try:
+        # Atualiza o saldo da conta após a exclusão da transacao
+        valor_da_conta = transacao.conta.saldo_atual + transacao.valor_total
+        transacao.conta.saldo_atual = valor_da_conta
+
+        valor_do_limite = transacao.conta.limite_atual + transacao.valor_total
+        transacao.conta.limite_atual = valor_do_limite
+
+        transacao.conta.save()
+        transacao.delete()
+
+        messages.success(request, 'Transação parcelada excluída com sucesso!')
+        return redirect('listar_transacoes')
+
+    except Exception as e:
+        messages.error(request, f'Erro ao excluir transação: {e}')
+        return HttpResponse(f"Erro: {e}")

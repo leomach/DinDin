@@ -22,6 +22,24 @@
                 </thead>
                 <tbody>
                     {% for transacao in page.object_list %}
+                    {% if transacao.parcelas %}
+                        <tr>
+                            <td>{{ transacao.data|date:"d/m/Y" }}</td>
+                            <td>{{ transacao.descricao }}</td>
+                            <td>R$ {{ transacao.valor_total|floatformat:2 }}</td>
+                            {% if transacao.tipo == 'R' %}
+                                <td>Receita</td>
+                            {% else %}
+                                <td>Despesa</td>
+                            {% endif %}
+                            <td>{{ transacao.categoria.nome }}</td>
+                            <td>{{ transacao.conta.nome }}</td>
+                            <td>
+                                {% comment %} <a href="{% url 'editar_transacao' transacao.pk %}" class="editar">#</a> {% endcomment %}
+                                <a href="{% url 'excluir_transacao_parcelada' transacao.pk %}" class="excluir">X</a>
+                            </td>
+                        </tr>
+                    {% else %}
                         <tr>
                             <td>{{ transacao.data|date:"d/m/Y" }}</td>
                             <td>{{ transacao.descricao }}</td>
@@ -38,6 +56,7 @@
                                 <a href="{% url 'excluir_transacao' transacao.pk %}" class="excluir">X</a>
                             </td>
                         </tr>
+                    {% endif %}
                     {% endfor %}
                 </tbody>
             </table>

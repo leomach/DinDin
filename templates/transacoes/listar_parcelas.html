@@ -1,0 +1,61 @@
+{% extends "shared/base.html"%}
+{% load static %}
+{% block content %}
+<section class="transacoes">
+    <div class="title">
+        <h1>Parcelas</h1>
+    </div>
+    <div class="transacoes-list">
+        <table class="tabela-transacoes">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                    <th>Número</th>
+                    <th>Conta</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for parcela in page.object_list %}
+                    <tr>
+                        <td>{{ parcela.data|date:"d/m/Y" }}</td>
+                        <td>{{ parcela.transacao_parcelada.descricao }}</td>
+                        <td>R$ {{ parcela.valor_parcela|floatformat:2 }}</td>
+                        <td>Nº{{ parcela.numero_parcela }}</td>
+                        <td>{{ parcela.transacao_parcelada.conta.nome }}</td>
+                        <td style="display: block; color: orange; font-weight: 700;">
+                            {% if parcela.status == 1 %}
+                            Pendente
+                            {% else %}
+                            Pago
+                            {% endif %}
+                        </td>
+                        <td >
+                            <a style="width: 100%;" href="{% url 'toggle_status_parcela' parcela.pk %}" class="confirmar">Pago/Pendente</a>
+                            {% comment %} <a href="{% url 'excluir_parcela' parcela.pk %}" class="excluir">X</a> {% endcomment %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="paginacao">
+            {% if page.has_previous %}
+                <a href="{% url 'listar_transacoes'%}?page={{ page.previous_page_number }}" class="btn">Anterior</a>
+            {% endif %}
+            <p>Página {{ page.number }} de {{ page.paginator.num_pages }}</p>
+            {% if page.has_next %}
+                <a href="{% url 'listar_transacoes'%}?page={{ page.next_page_number }}" class="btn">Próximo</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+<script>
+    function toggleParcela(id) {
+        fetch(`/toggle_status_parcela/${id}/`)
+        .then(response => console.log(response.json()))
+    }
+</script>
+{% endblock %}

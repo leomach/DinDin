@@ -32,6 +32,7 @@ class Parcela(models.Model):
     valor_parcela = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)
     data = models.DateField(default=datetime.date.today)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.IntegerField(default=1, choices=[(1, 'Pendente'), (2, 'Paga'),])
 
     def __str__(self):
         return f'{self.transacao_parcelada.descricao} - R${self.valor_parcela} - {self.numero_parcela}ª Parcela'
