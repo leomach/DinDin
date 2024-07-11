@@ -12,6 +12,9 @@
                 <div class="campo">
                     <label for="{{ field.id_for_label }}">{{field.label}}</label>
                     {{ field }}
+                    {% for error in field.errors %}
+                        <p class="text-danger text-sm">{{ error }}</p>
+                    {% endfor %}
                 </div>
                 {% endfor %}
                 <button type="submit" id="btnSubmit" class="btn">Salvar</button>
