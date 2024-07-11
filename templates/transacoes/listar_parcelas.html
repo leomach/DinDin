@@ -4,6 +4,11 @@
 <section class="transacoes">
     <div class="title">
         <h1>Parcelas</h1>
+        <div class="filtros">
+            <p>Filtrar por:</p>
+            <a href="{% url 'listar_parcelas' %}?pago=true" class="btn-parcelas">Pagas</a>
+            <a href="{% url 'listar_parcelas' %}?pago=false" class="btn-parcelas">Pendentes</a>
+        </div>
     </div>
     <div class="transacoes-list">
         <table class="tabela-transacoes">

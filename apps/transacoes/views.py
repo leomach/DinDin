@@ -54,7 +54,16 @@ def listar_transacoes(request):
 def listar_parcelas(request):
     usuario = request.user
 
-    parcelas = Parcela.objects.filter(usuario=usuario)
+
+    pago_ou_pendente = request.GET.get('pago')
+    print(pago_ou_pendente)
+    if pago_ou_pendente == 'true':
+        parcelas = Parcela.objects.filter(usuario=usuario).filter(status=2)
+    elif pago_ou_pendente == 'false':
+        parcelas = Parcela.objects.filter(usuario=usuario).filter(status=1)
+    else:
+        parcelas = Parcela.objects.filter(usuario=usuario)
+        
     parcelas_decrescente = sorted(parcelas, key=lambda x: x.data, reverse=False)
 
     parcelas_paginator = Paginator(parcelas_decrescente, 10)
