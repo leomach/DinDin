@@ -72,6 +72,8 @@ def index(request):
     # Gerais 2
     economia = saldo_mes_anterior + saldo_mes_atual
 
+    transacoes_e_parcelas_mes_atual.sort(key=lambda x: x.data, reverse=True)
+
     # Faz a paginação das transações
     transacoes_paginator = Paginator(transacoes_e_parcelas_mes_atual, 10)
     page_num = request.GET.get('page')

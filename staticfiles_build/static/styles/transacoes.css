@@ -85,7 +85,7 @@
     text-align: center;
 }
 
-.transacoes .transacoes-list .tabela-transacoes tr td a:first-child {
+.transacoes .transacoes-list .tabela-transacoes tr td .editar {
     text-decoration: none;
     cursor: pointer;
     font-weight: 600;
@@ -96,7 +96,7 @@
     transition: all 0.3s;
     opacity: 100%;
 }
-.transacoes .transacoes-list .tabela-transacoes tr td a:last-child {
+.transacoes .transacoes-list .tabela-transacoes tr td .excluir {
     text-decoration: none;
     cursor: pointer;
     font-weight: 600;
@@ -108,11 +108,21 @@
     opacity: 100%;
 }
 
-.transacoes .transacoes-list .tabela-transacoes tr td a:first-child:hover {
-    opacity: 80%;
+.transacoes .transacoes-list .tabela-transacoes tr td .confirmar {
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 600;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 7px;
+    background-color: #0b835b;
     transition: all 0.3s;
+    opacity: 100%;
 }
-.transacoes .transacoes-list .tabela-transacoes tr td a:last-child:hover {
+
+.transacoes .transacoes-list .tabela-transacoes tr td .editar:hover,
+.transacoes .transacoes-list .tabela-transacoes tr td .confirmar:hover,
+.transacoes .transacoes-list .tabela-transacoes tr td .excluir:hover {
     opacity: 80%;
     transition: all 0.3s;
 }
@@ -122,6 +132,15 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
+}
+
+.paginacao {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 40px;
 }
 
 @media screen and (max-width: 768px) {

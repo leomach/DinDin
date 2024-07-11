@@ -23,6 +23,74 @@ body {
 
 main {
     z-index: 1;
-    padding-left: 54px;
+    padding-left: 82px;
     width: 100%;
+}
+
+.container-fluid {
+    position: fixed;
+    display: block;
+    position: fixed;
+    top: 20px;
+    left: 15%;
+    unicode-bidi: isolate;
+    word-wrap: break-word;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    width: 90%;
+    max-width: 490px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.alert {
+    text-align: left !important;
+    padding-right: 4rem;
+    position: relative;
+    padding: .75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: .35rem;
+    word-wrap: break-word;
+    transition: opacity .15s linear;
+}
+
+.alert-success {
+    color: #0f6848;
+    background-color: #d2f4e8;
+    border-color: #bff0de;
+}
+
+.alert-error {
+    color: #680f0f;
+    background-color: #f3e4e4;
+    border-color: #f0bfbf;
+}
+
+.alert-text{
+    text-align: left !important;
+}
+
+.close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    padding: .75rem 1.25rem;
+    color: inherit;
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
+    float: right;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+    text-transform: none;
+    overflow: visible;
+    margin: 0;
+    font-family: inherit;
+    border-radius: 0;
+    word-wrap: break-word;
 }
