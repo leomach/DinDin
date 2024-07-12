@@ -38,9 +38,10 @@
                             Pago
                             {% endif %}
                         </td>
-                        <td >
+                        <td style="display: flex; gap:10px;">
                             <a style="width: 100%;" href="{% url 'toggle_status_parcela' parcela.pk %}" class="confirmar">Pago/Pendente</a>
                             {% comment %} <a href="{% url 'excluir_parcela' parcela.pk %}" class="excluir">X</a> {% endcomment %}
+                            <a href="{% url 'editar_parcela' parcela.id %}" class="editar">#</a>
                         </td>
                     </tr>
                 {% endfor %}

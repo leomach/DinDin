@@ -6,7 +6,7 @@ from django.db.models import Sum
 from ..conta.models import Conta
 from ..categorias.models import Categoria
 from ..subcategorias.models import Subcategoria
-from .forms import TransacaoForm, TransacaoParceladaForm
+from .forms import TransacaoForm, TransacaoParceladaForm, ParcelaForm
 from django.core.paginator import Paginator
 import datetime
 from dateutil.relativedelta import *
@@ -233,6 +233,7 @@ def criar_transacao_parcelada(request):
         'subcategorias': subcategorias,
     })
 
+
 @login_required
 def editar_transacao(request, transacao_pk):
     """
@@ -259,7 +260,7 @@ def editar_transacao(request, transacao_pk):
 
                 # Atualiza o saldo da conta de acordo com o novo valor e tipo da transacao
                 if tipo == 'D':
-                    valor_da_conta = conta.saldo_atual - saldo_antigo - valor
+                    valor_da_conta = conta.saldo_atual + saldo_antigo - valor
                     conta.saldo_atual = valor_da_conta
                 else:
                     valor_da_conta = conta.saldo_atual - saldo_antigo + valor
@@ -296,6 +297,42 @@ def editar_transacao(request, transacao_pk):
         'categorias': categorias,
         'subcategorias': subcategorias,
         'transacao': transacao,
+    })
+
+def editar_parcela(request, parcela_pk):
+    """
+    View para editar uma parcela específica.
+    """
+    usuario = request.user
+    parcela = get_object_or_404(Parcela, pk=parcela_pk, usuario=usuario)
+    conta = get_object_or_404(Conta, pk=parcela.transacao_parcelada.conta.id, usuario=usuario)
+
+    if request.method == 'POST':
+        form = ParcelaForm(request.POST, instance=parcela)
+
+        if form.is_valid():
+            data = form.cleaned_data['data']
+            valor_parcela = form.cleaned_data['valor_parcela']
+
+            parcela.data = data
+            saldo_atual_conta = conta.saldo_atual - parcela.valor_parcela + valor_parcela
+            limite_atual_conta = conta.limite_atual + parcela.valor_parcela - valor_parcela
+            conta.saldo_atual = saldo_atual_conta
+            conta.limite_atual = limite_atual_conta
+
+            conta.save()
+            parcela.save()
+            messages.success(request, 'Parcela atualizada com sucesso!')
+            return redirect('listar_parcelas')
+        else:
+            messages.error(request, f'Erro: Formulário inválido')
+            return redirect('editar_parcela', parcela_pk=parcela_pk)
+    else:
+        form = ParcelaForm(instance=parcela)
+    
+    return render(request, 'transacoes/editar_parcela.html', {
+        'form': form,
+        'parcela': parcela,
     })
 
 @login_required

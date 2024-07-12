@@ -1,5 +1,5 @@
 from django import forms
-from .models import Transacao, TransacaoParcelada
+from .models import Transacao, TransacaoParcelada, Parcela
 from ..conta.models import Conta
 from ..subcategorias.models import Subcategoria, Categoria
 
@@ -134,3 +134,33 @@ class TransacaoForm(forms.ModelForm):
         # Atualizar o campo 'subcategoria' com as opções filtradas
         self.fields['subcategoria'].queryset = subcategorias
         return categoria_selecionada
+    
+class ParcelaForm(forms.ModelForm):
+    """Formulário para parcelas de transações."""
+    class Meta:
+        model = Parcela
+        fields = [
+            'data',
+            'valor_parcela'
+        ]
+        exclude = ['id', 'transacao_parcelada', 'usuario', 'numero_parcela', 'status']
+        labels = {
+            'data': 'Data da parcela',
+            'valor_parcela': 'Valor da parcela',
+        }
+        widgets = {
+            'data': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'valor_parcela': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+    def clean_valor_parcela(self):
+        """
+        Valida o campo 'valor_parcela'.
+        """
+        valor_parcela = self.cleaned_data['valor_parcela']
+
+        if valor_parcela <= 0:
+            raise forms.ValidationError('O valor da parcela deve ser maior que zero.')
+
+        return valor_parcela
+        
