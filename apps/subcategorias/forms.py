@@ -21,13 +21,12 @@ class SubcategoriaForm(forms.ModelForm):
             'categoria': forms.Select(attrs={'class': 'form-control'}),
         }
 
-    def __init__(self, request, *args, **kwargs):
-        """
-        Construtor do formulário para receber o objeto request.
-        """
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        self.request = request
-        self.set_categoria_choices()
+        
+        if user:
+            self.fields['categoria'].queryset = Categoria.objects.filter(usuario=user)
 
     def set_categoria_choices(self):
         """

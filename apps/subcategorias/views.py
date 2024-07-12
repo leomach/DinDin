@@ -22,25 +22,28 @@ def criar_subcategoria(request, categoria_pk):
     View para criar uma nova subcategoria para uma categoria específica.
     """
     categoria = get_object_or_404(Categoria, pk=categoria_pk, usuario=request.user)
-    form = SubcategoriaForm(request)
     if request.method == 'POST':
-        nome = request.POST['nome']
-        descricao = request.POST['descricao']
+        form = SubcategoriaForm(request.POST)
+        if form.is_valid():
+            nome = form.cleaned_data['nome']
+            descricao = form.cleaned_data['descricao']
 
-        try:
-            subcategoria = Subcategoria.objects.create(
-                usuario=request.user,
-                categoria=categoria,
-                nome=nome,
-                descricao=descricao
-            )
-            subcategoria.save()
+            try:
+                subcategoria = Subcategoria.objects.create(
+                    usuario=request.user,
+                    categoria=categoria,
+                    nome=nome,
+                    descricao=descricao
+                )
+                subcategoria.save()
 
-            messages.success(request, 'Subcategoria criada com sucesso!')
-            return redirect('subcategorias', categoria_pk=categoria.pk)
+                messages.success(request, 'Subcategoria criada com sucesso!')
+                return redirect('subcategorias', categoria_pk=categoria.pk)
 
-        except Exception as e:
-            messages.error(request, f'Erro ao criar subcategoria: {e}')
+            except Exception as e:
+                messages.error(request, f'Erro ao criar subcategoria: {e}')
+    else:
+        form = SubcategoriaForm(user=request.user)
 
     return render(request, 'categorias/criar_subcategoria.html', {
         'categoria': categoria,
@@ -56,19 +59,23 @@ def editar_subcategoria(request, categoria_pk, subcategoria_pk):
     subcategoria = get_object_or_404(Subcategoria, pk=subcategoria_pk, categoria=categoria)
 
     if request.method == 'POST':
-        nome = request.POST['nome']
-        descricao = request.POST['descricao']
+        form = SubcategoriaForm(request.POST, instance=subcategoria)
+        if form.is_valid():
+            nome = form.cleaned_data['nome']
+            descricao = form.cleaned_data['descricao']
 
-        try:
-            subcategoria.nome = nome
-            subcategoria.descricao = descricao
-            subcategoria.save()
+            try:
+                subcategoria.nome = nome
+                subcategoria.descricao = descricao
+                subcategoria.save()
 
-            messages.success(request, 'Subcategoria atualizada com sucesso!')
-            return redirect('subcategorias', categoria_pk=categoria.pk)
+                messages.success(request, 'Subcategoria atualizada com sucesso!')
+                return redirect('subcategorias', categoria_pk=categoria.pk)
 
-        except Exception as e:
-            messages.error(request, f'Erro ao editar subcategoria: {e}')
+            except Exception as e:
+                messages.error(request, f'Erro ao editar subcategoria: {e}')
+    else:
+        form = SubcategoriaForm(instance=subcategoria, user=request.user)
 
     return render(request, 'categorias/editar_subcategoria.html', {
         'categoria': categoria,

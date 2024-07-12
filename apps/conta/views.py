@@ -55,6 +55,8 @@ def criar_conta(request):
 
             messages.success(request, 'Conta criada com sucesso!')
             return redirect('contas')
+    else:
+        form = ContaForms(user=request.user)
 
     return render(request, 'contas/criar_conta.html')
 
@@ -87,7 +89,7 @@ def editar_conta(request, conta_id):
             messages.success(request, 'Conta atualizada com sucesso!')
             return redirect('contas')
     else:
-        form = ContaForms(instance=conta)
+        form = ContaForms(instance=conta, user=request.user)
 
     return render(request, 'contas/editar_conta.html', {'form': form, 'conta': conta})
 

@@ -1,6 +1,7 @@
 from django import forms
 from .models import Transacao, TransacaoParcelada
-from ..subcategorias.models import Subcategoria
+from ..conta.models import Conta
+from ..subcategorias.models import Subcategoria, Categoria
 
 class TransacaoParceladaForm(forms.ModelForm):
     """Formulário para transações parceladas."""
@@ -36,6 +37,15 @@ class TransacaoParceladaForm(forms.ModelForm):
             'subcategoria': forms.Select(attrs={'class': 'form-control', 'id': 'field-subcategoria'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if user:
+            self.fields['conta'].queryset = Conta.objects.filter(usuario=user)
+            self.fields['categoria'].queryset = Categoria.objects.filter(usuario=user)
+            self.fields['subcategoria'].queryset = Subcategoria.objects.filter(usuario=user)
+
     def clean_valor(self):
         """
         Valida o campo 'valor'.
@@ -60,6 +70,7 @@ class TransacaoParceladaForm(forms.ModelForm):
 
 class TransacaoForm(forms.ModelForm):
     """Formulário para transações."""
+    
 
     class Meta:
         model = Transacao
@@ -87,10 +98,20 @@ class TransacaoForm(forms.ModelForm):
             'descricao': forms.TextInput(attrs={'class': 'form-control'}),
             'valor': forms.NumberInput(attrs={'class': 'form-control'}),
             'tipo': forms.Select(attrs={'class': 'form-control'}),
-            'conta': forms.Select(attrs={'class': 'form-control'}),
+            'conta': forms.Select(attrs={'class': 'form-control'},),
             'categoria': forms.Select(attrs={'class': 'form-control', 'id': 'field-categoria'}),
             'subcategoria': forms.Select(attrs={'class': 'form-control', 'id': 'field-subcategoria'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if user:
+            self.fields['conta'].queryset = Conta.objects.filter(usuario=user)
+            self.fields['categoria'].queryset = Categoria.objects.filter(usuario=user)
+            self.fields['subcategoria'].queryset = Subcategoria.objects.filter(usuario=user)
+        
 
     def clean_valor(self):
         """
@@ -113,4 +134,3 @@ class TransacaoForm(forms.ModelForm):
         # Atualizar o campo 'subcategoria' com as opções filtradas
         self.fields['subcategoria'].queryset = subcategorias
         return categoria_selecionada
-

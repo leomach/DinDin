@@ -43,6 +43,40 @@
     transition: all 0.3s;
 }
 
+.transacoes .title .filtros {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.transacoes .title .filtros .btn-parcelas {
+    font-size: small;
+    font-weight: 600;
+    text-decoration: none;
+    color: aliceblue;
+    background-color: #0b8351;
+    width: max-content;
+    padding: 4px 12px;
+    border: solid 1px transparent;
+    transition: all 0.3s;
+}
+
+.transacoes .title .filtros .btn-parcelas:hover {
+    background-color: transparent;
+    border: solid 1px #0b8351;
+    color: #0b8351;
+    transition: all 0.3s;
+}
+
+.transacoes .title .filtros p {
+    width: 100%;
+    font-size: 15px;
+}
+
 .transacoes .title .btn-parcelada {
     font-size: small;
     font-weight: 600;

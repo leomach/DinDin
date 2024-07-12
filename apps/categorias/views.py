@@ -20,24 +20,27 @@ def criar_categoria(request):
     """
     View para criar uma nova categoria.
     """
-    form = CategoriaForm()
     if request.method == 'POST':
-        nome = request.POST['nome']
-        descricao = request.POST['descricao']
+        form = CategoriaForm(request.POST)
+        if form.is_valid():
+            nome = form.cleaned_data['nome']
+            descricao = form.cleaned_data['descricao']
 
-        try:
-            categoria = Categoria.objects.create(
-                usuario=request.user,
-                nome=nome,
-                descricao=descricao
-            )
-            categoria.save()
+            try:
+                categoria = Categoria.objects.create(
+                    usuario=request.user,
+                    nome=nome,
+                    descricao=descricao
+                )
+                categoria.save()
 
-            messages.success(request, 'Categoria criada com sucesso!')
-            return redirect('categorias')
+                messages.success(request, 'Categoria criada com sucesso!')
+                return redirect('categorias')
 
-        except Exception as e:
-            messages.error(request, f'Erro ao criar categoria: {e}')
+            except Exception as e:
+                messages.error(request, f'Erro ao criar categoria: {e}')
+    else:
+        form = CategoriaForm(user=request.user)
 
     return render(request, 'categorias/criar_categoria.html', {'form': form})
 
@@ -49,19 +52,24 @@ def editar_categoria(request, categoria_id):
     categoria = get_object_or_404(Categoria, pk=categoria_id, usuario=request.user)
 
     if request.method == 'POST':
-        nome = request.POST['nome']
-        descricao = request.POST['descricao']
+        form = CategoriaForm(request.POST, instance=categoria)
+        if form.is_valid():
+            nome = form.cleaned_data['nome']
+            descricao = form.cleaned_data['descricao']
 
-        try:
-            categoria.nome = nome
-            categoria.descricao = descricao
-            categoria.save()
+            try:
+                categoria.nome = nome
+                categoria.descricao = descricao
+                categoria.save()
 
-            messages.success(request, 'Categoria atualizada com sucesso!')
-            return redirect('categorias')
+                messages.success(request, 'Categoria atualizada com sucesso!')
+                return redirect('categorias')
 
-        except Exception as e:
-            messages.error(request, f'Erro ao editar categoria: {e}')
+            except Exception as e:
+                messages.error(request, f'Erro ao editar categoria: {e}')
+
+    else:
+        form = CategoriaForm(instance=categoria, user=request.user)
 
     return render(request, 'categorias/editar_categoria.html', {
         'categoria': categoria

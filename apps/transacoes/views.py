@@ -140,7 +140,7 @@ def criar_transacao(request):
                 messages.error(request, f'Erro ao criar transação: {e}')
 
     else:
-        form = TransacaoForm()
+        form = TransacaoForm(user=request.user)
 
     contas = Conta.objects.filter(usuario=request.user)
     categorias = Categoria.objects.filter(usuario=request.user)
@@ -220,7 +220,7 @@ def criar_transacao_parcelada(request):
             #     messages.error(request, f'Erro ao criar transação: {e}')
 
     else:
-        form = TransacaoParceladaForm()
+        form = TransacaoParceladaForm(user=request.user)
 
     contas = Conta.objects.filter(usuario=request.user)
     categorias = Categoria.objects.filter(usuario=request.user)
@@ -284,7 +284,7 @@ def editar_transacao(request, transacao_pk):
                 messages.error(request, f'Erro ao editar transação: {e}')
 
     else:
-        form = TransacaoForm(instance=transacao)
+        form = TransacaoForm(instance=transacao, user=request.user)
 
     contas = Conta.objects.filter(usuario=request.user)
     categorias = Categoria.objects.filter(usuario=request.user)
