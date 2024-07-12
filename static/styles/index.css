@@ -19,7 +19,7 @@
     background-color: #053d31;
 }
 
-.index .topo .title {
+.index .none {
     display: none;
 }
 
@@ -29,6 +29,7 @@
     font-size: large;
     font-weight: 600;
     padding-bottom: 10px;
+    cursor: pointer;
 }
 
 .index .topo .gerais {
@@ -69,37 +70,43 @@
     font-size: small;
 }
 
-.index .mes {
+.index .blocos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.index .bloco {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
     width: 30%;
-    margin: 30px 0;
+    margin-top: 30px;
     padding: 25px 0 10px 0;
     border-radius: 10px;
 
     background-color: #fff;
 }
 
-.index .mes .titulo {
+.index .bloco .titulo {
     display: flex;
     flex-direction: row;
     align-items: start;
     justify-content: start;
     width: 80%;
-
-
 }
 
-.index .mes .titulo h4 {
+.index .bloco .titulo h4 {
     text-align: left;
     font-size: large;
     font-weight: 500;
 }
 
-.index .mes .cards {
+.index .bloco .cards {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -108,7 +115,7 @@
     padding: 10px 0 10px 0;
 }
 
-.index .mes .cards .card {
+.index .bloco .cards .card {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -117,14 +124,14 @@
     width: 100%;
 }
 
-.index .mes .cards .card .icone {
+.index .bloco .cards .card .icone {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
 }
 
-.index .mes .cards .card .icone-receita {
+.index .bloco .cards .card .icone-receita {
     padding: 5px 12px;
     width: max-content;
     background-color: #074e3f;
@@ -132,7 +139,7 @@
     color: #fff;
 }
 
-.index .mes .cards .card .icone-despesa {
+.index .bloco .cards .card .icone-despesa {
     padding: 5px 12px;
     background-color: #4e0707;
     border-radius: 25px;
@@ -140,19 +147,19 @@
     width: max-content;
 }
 
-.index .mes .cards .card .titulos,
-.index .mes .cards .card .valor,
-.index .mes .cards .card .icone {
+.index .bloco .cards .card .titulos,
+.index .bloco .cards .card .valor,
+.index .bloco .cards .card .icone {
     width: 33%;
 }
 
-.index .mes .cards .card h4 {
+.index .bloco .cards .card h4 {
     font-size: medium;
     font-weight: 500;
     text-align: left;
 }
 
-.index .mes .cards .card h3 {
+.index .bloco .cards .card h3 {
     font-size: small;
     font-weight: 500;
     color: #949494;
@@ -167,6 +174,7 @@
         justify-content: center;
         width: 90%;
         gap: 20px;
+        margin-top: 30px;
     }
 
     .index .transacoes-list .tabela-transacoes {
@@ -247,10 +255,13 @@
         }
 
         .index .topo .title {
-            display: none;
-        }
-
-        .index .topo .titulo p {
+            display: none;.index .blocos {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+            }
             color: #e3f7e8;
             color: #fff;
             font-size: large;
@@ -296,21 +307,29 @@
             font-size: small;
         }
 
-        .index .mes {
+        .index .blocos {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .index .bloco {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
             width: 90%;
-            margin: 30px 0;
+            margin-top: 30px;
             padding: 25px 0 10px 0;
             border-radius: 10px;
 
             background-color: #fff;
         }
 
-        .index .mes .titulo {
+        .index .bloco .titulo {
             display: flex;
             flex-direction: row;
             align-items: start;
@@ -320,22 +339,22 @@
 
         }
 
-        .index .mes .titulo h4 {
+        .index .bloco .titulo h4 {
             text-align: left;
             font-size: large;
             font-weight: 500;
         }
 
-        .index .mes .cards {
+        .index .bloco .cards {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             width: 100%;
-            padding: 10px 0 10px 0;
+            padding: 10px 20px;
         }
 
-        .index .mes .cards .card {
+        .index .bloco .cards .card {
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -344,14 +363,14 @@
             width: 100%;
         }
 
-        .index .mes .cards .card .icone {
+        .index .bloco .cards .card .icone {
             display: flex;
             flex-direction: row;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
         }
 
-        .index .mes .cards .card .icone-receita {
+        .index .bloco .cards .card .icone-receita {
             padding: 5px 12px;
             width: max-content;
             background-color: #074e3f;
@@ -359,7 +378,7 @@
             color: #fff;
         }
 
-        .index .mes .cards .card .icone-despesa {
+        .index .bloco .cards .card .icone-despesa {
             padding: 5px 12px;
             background-color: #4e0707;
             border-radius: 25px;
@@ -367,23 +386,38 @@
             width: max-content;
         }
 
-        .index .mes .cards .card .titulos,
-        .index .mes .cards .card .valor,
-        .index .mes .cards .card .icone {
-            width: 33%;
+        .index .bloco .cards .card .titulos,
+        .index .bloco .cards .card .valor {
+            width: 40%;
         }
-
-        .index .mes .cards .card h4 {
-            font-size: medium;
-            font-weight: 500;
+        .index .bloco .cards .card .icone {
+            width: 20%;
+        }
+        
+        .index .bloco .cards .card .titulos h4 {
             text-align: left;
+            font-size: smaller;
+            font-weight: 500;
         }
-
-        .index .mes .cards .card h3 {
+        
+        .index .bloco .cards .card .titulos h3 {
+            text-align: left;
             font-size: small;
             font-weight: 500;
             color: #949494;
-            text-align: left;
+        }
+
+        .index .bloco .cards .card .valor h4 {
+            text-align: right;
+            font-size: smaller;
+            font-weight: 500;
+        }
+        
+        .index .bloco .cards .card .valor h3 {
+            text-align: right;
+            font-size: small;
+            font-weight: 500;
+            color: #949494;
         }
 
         .index .transacoes-list .tabela-transacoes {

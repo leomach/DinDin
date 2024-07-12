@@ -1,64 +1,126 @@
 {% extends "shared/base.html" %}
 {% load static %}
 {% block content %}
+<link rel="stylesheet" href="{% static '/styles/index.css' %}">
+
 <section class="index">
     <div class="topo">
         <div class="titulo">
-            <p>MENSAL</p>
+            <p onclick="timeToggle()" class="" id="mensal">< MENSAL ></p>
+            <p onclick="timeToggle()" class="none" id="anual">< ANUAL ></p>
         </div>
-        <div class="gerais">
-            <div class="info">
-                <h4>Mês anterior</h4>
-                <p>R${{saldo_mes_anterior}}</p>
-            </div>
-            <div class="info-principal">
-                <h4>Saldo</h4>
-                <p>R${{saldo_mes_atual}}</p>
-            </div>
-            <div class="info">
-                <h4>Economia</h4>
-                <p>R${{economia}}</p>
+        <div id="gerais_mes" style="width:100%;" class="">
+            <div class="gerais">
+                <div class="info">
+                    <h4>Mês anterior</h4>
+                    <p>R${{saldo_mes_anterior}}</p>
+                </div>
+                <div class="info-principal">
+                    <h4>Saldo</h4>
+                    <p>R${{saldo_mes_atual}}</p>
+                </div>
+                <div class="info">
+                    <h4>Saldo anual</h4>
+                    <p>R${{saldo_ano_atual}}</p>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="mes">
-        <div class="titulo">
-            <h4>Mês atual</h4>
-        </div>
-        <div class="cards">
-            <div class="card">
-                <div class="icone">
-                    <div class="icone-receita">
-                        <i class="fa-sharp fa-solid fa-arrow-up"></i>
-                    </div>
+        <div id="gerais_ano" style="width:100%;" class="none">
+            <div class="gerais">
+                <div class="info">
+                    <h4>Ano anterior</h4>
+                    <p>R${{saldo_ano_anterior}}</p>
                 </div>
-                <div class="titulos">
-                    <h4>Receitas</h4>
-                    <h3>Mês anterior</h3>
+                <div class="info-principal">
+                    <h4>Saldo</h4>
+                    <p>R${{saldo_ano_atual}}</p>
                 </div>
-                <div class="valor">
-                    <h4>R${{transacoes_receitas_mes_atual}}</h4>
-                    <h3>R${{transacoes_receitas_mes_anterior}}</h3>
-                </div>
-            </div>
-            <div class="card">
-                <div class="icone">
-                    <div class="icone-despesa">
-                        <i class="fa-sharp fa-solid fa-arrow-down"></i>
-                    </div>
-                </div>
-                <div class="titulos">
-                    <h4>Despesas</h4>
-                    <h3>Mês anterior</h3>
-                </div>
-                <div class="valor">
-                    <h4>R${{despesas_mes_atual}}</h4>
-                    <h3>R${{despesas_mes_anterior}}</h3>
+                <div class="info">
+                    <h4>Economia</h4>
+                    <p>R${{economia_anual}}</p>
                 </div>
             </div>
         </div>
     </div>
-    <div class="mes">
+    <div class="blocos" id="blocos_mes">
+        <div class="bloco">
+            <div class="titulo">
+                <h4>Mês atual</h4>
+            </div>
+            <div class="cards">
+                <div class="card">
+                    <div class="icone">
+                        <div class="icone-receita">
+                            <i class="fa-sharp fa-solid fa-arrow-up"></i>
+                        </div>
+                    </div>
+                    <div class="titulos">
+                        <h4>Receitas</h4>
+                        <h3>Mês anterior</h3>
+                    </div>
+                    <div class="valor">
+                        <h4>R${{transacoes_receitas_mes_atual}}</h4>
+                        <h3>R${{transacoes_receitas_mes_anterior}}</h3>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="icone">
+                        <div class="icone-despesa">
+                            <i class="fa-sharp fa-solid fa-arrow-down"></i>
+                        </div>
+                    </div>
+                    <div class="titulos">
+                        <h4>Despesas</h4>
+                        <h3>Mês anterior</h3>
+                    </div>
+                    <div class="valor">
+                        <h4>R${{despesas_mes_atual}}</h4>
+                        <h3>R${{despesas_mes_anterior}}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="none" id="blocos_ano">
+        <div class="bloco">
+            <div class="titulo">
+                <h4>Ano atual</h4>
+            </div>
+            <div class="cards">
+                <div class="card">
+                    <div class="icone">
+                        <div class="icone-receita">
+                            <i class="fa-sharp fa-solid fa-arrow-up"></i>
+                        </div>
+                    </div>
+                    <div class="titulos">
+                        <h4>Receitas</h4>
+                        <h3>Ano anterior</h3>
+                    </div>
+                    <div class="valor">
+                        <h4>R${{transacoes_receitas_ano_atual}}</h4>
+                        <h3>R${{receitas_ano_anterior}}</h3>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="icone">
+                        <div class="icone-despesa">
+                            <i class="fa-sharp fa-solid fa-arrow-down"></i>
+                        </div>
+                    </div>
+                    <div class="titulos">
+                        <h4>Despesas</h4>
+                        <h3>Ano anterior</h3>
+                    </div>
+                    <div class="valor">
+                        <h4>R${{despesas_ano_atual}}</h4>
+                        <h3>R${{despesas_ano_anterior}}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bloco">
         <div class="titulo">
             <h4>Contas</h4>
         </div>
@@ -80,7 +142,7 @@
             </div>
         </div>
     </div>
-    <div class="transacoes-list">
+    <div id="transacoes_mes" class="transacoes-list">
         <table class="tabela-transacoes">
             <thead>
                 <tr>
@@ -125,4 +187,5 @@
         </div>
     </div>
 </section>
+<script src="{% static 'scripts/home.js' %}"></script>
 {% endblock %}

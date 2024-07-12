@@ -28,18 +28,25 @@ def index(request):
     subcategorias = Subcategoria.objects.filter(usuario=usuario)
     
     # Data
-    dia = datetime.now().date().day
-    mes = datetime.now().date().month
-    ano = datetime.now().date().year
+    dia = datetime.now().day
+    mes = datetime.now().month
+    ano = datetime.now().year
 
     saldo_total_contas = Conta.objects.filter(usuario=usuario).aggregate(saldo_total=Sum('saldo_atual'))['saldo_total'] or 0
-    saldo_total_transacoes = transacoes.aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
+    receita_total_transacoes = transacoes.filter(tipo='R').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
+    despesa_total_transacoes = transacoes.filter(tipo='D').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
+    saldo_total_transacoes = receita_total_transacoes - despesa_total_transacoes
     diferenca_saldo = saldo_total_contas - saldo_total_transacoes
 
     # Calculos mês e ano atual
     transacoes_ano_atual = Transacao.objects.filter(data__year=ano).filter(usuario=usuario)
-    receitas_ano_atual = transacoes_ano_atual.filter(tipo='R').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
-    despesas_ano_atual = transacoes_ano_atual.filter(tipo='D').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
+    parcelas_ano_atual = Parcela.objects.filter(data__year=ano).filter(usuario=usuario)
+    transacoes_receitas_ano_atual = transacoes_ano_atual.filter(tipo='R').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
+    transacoes_despesas_ano_atual = transacoes_ano_atual.filter(tipo='D').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
+    total_parcelas_ano_atual = parcelas_ano_atual.aggregate(saldo_total=Sum('valor_parcela'))['saldo_total'] or 0
+    despesas_ano_atual = transacoes_despesas_ano_atual + total_parcelas_ano_atual
+
+    saldo_ano_atual = transacoes_receitas_ano_atual - despesas_ano_atual
 
     transacoes_mes_atual = Transacao.objects.filter(data__year=ano).filter(data__month=mes).filter(usuario=usuario)
     parcelas_mes_atual = Parcela.objects.filter(data__year=ano).filter(data__month=mes).filter(usuario=usuario)
@@ -51,14 +58,25 @@ def index(request):
     despesas_mes_atual = total_transacoes_despesas_mes_atual + total_parcelas_mes_atual
 
     saldo_mes_atual = transacoes_receitas_mes_atual - despesas_mes_atual
+
+    # Transações do mês anterior
+    if mes == 1:
+        mes_anterior = 12
+        ano_anterior = ano - 1
+    else:
+        mes_anterior = mes - 1
+        ano_anterior = ano - 1
     
     # Calculos mês e ano anterior
-    transacoes_ano_anterior = Transacao.objects.filter(data__year=ano - 1).filter(usuario=usuario)
+    transacoes_ano_anterior = Transacao.objects.filter(data__year=ano_anterior).filter(usuario=usuario)
+    parcelas_ano_anterior = Parcela.objects.filter(data__year=ano_anterior).filter(usuario=usuario)
     receitas_ano_anterior = transacoes_ano_anterior.filter(tipo='R').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
-    despesas_ano_anterior = transacoes_ano_anterior.filter(tipo='D').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
+    transacoes_despesas_ano_anterior = transacoes_ano_anterior.filter(tipo='D').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
+    parcelas_despesas_ano_anterior = parcelas_ano_anterior.aggregate(saldo_total=Sum('valor_parcela'))['saldo_total'] or 0
+    despesas_ano_anterior = transacoes_despesas_ano_anterior + parcelas_despesas_ano_anterior
 
-    transacoes_mes_anterior = Transacao.objects.filter(data__year=ano).filter(data__month=mes - 1).filter(usuario=usuario)
-    parcelas_mes_anterior = Parcela.objects.filter(data__year=ano).filter(data__month=mes - 1).filter(usuario=usuario)
+    transacoes_mes_anterior = Transacao.objects.filter(data__year=ano).filter(data__month=mes_anterior).filter(usuario=usuario)
+    parcelas_mes_anterior = Parcela.objects.filter(data__year=ano).filter(data__month=mes_anterior).filter(usuario=usuario)
     transacoes_e_parcelas_mes_anterior = get_lista1_lista2(lista1=transacoes_mes_anterior, lista2=parcelas_mes_anterior)
 
     transacoes_receitas_mes_anterior = transacoes_mes_anterior.filter(tipo='R').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
@@ -69,8 +87,11 @@ def index(request):
     saldo_mes_anterior = transacoes_receitas_mes_anterior - despesas_mes_anterior
     saldo_ano_anterior = receitas_ano_anterior - despesas_ano_anterior
 
+    
+
     # Gerais 2
     economia = saldo_mes_anterior + saldo_mes_atual
+    economia_anual = saldo_ano_anterior + saldo_ano_atual
 
     transacoes_e_parcelas_mes_atual.sort(key=lambda x: x.data, reverse=True)
 
@@ -93,15 +114,20 @@ def index(request):
         },
 
         'economia':economia,
+        'economia_anual':economia_anual,
         'saldo_total_contas': saldo_total_contas,
+        'saldo_total_transacoes': saldo_total_transacoes,
 
         'diferenca_saldo': diferenca_saldo,
         'saldo_mes_atual': saldo_mes_atual,
+        'saldo_ano_atual': saldo_ano_atual,
         'transacoes_receitas_mes_atual': transacoes_receitas_mes_atual,
         'despesas_mes_atual': despesas_mes_atual,
-        'receitas_ano_atual': receitas_ano_atual,
+        'transacoes_receitas_ano_atual': transacoes_receitas_ano_atual,
         'despesas_ano_atual': despesas_ano_atual,
 
+        'receitas_ano_anterior': receitas_ano_anterior,
+        'despesas_ano_anterior': despesas_ano_anterior,
         'transacoes_receitas_mes_anterior': transacoes_receitas_mes_anterior,
         'transacoes_despesas_mes_anterior': transacoes_despesas_mes_anterior,
         'saldo_mes_anterior': saldo_mes_anterior,
