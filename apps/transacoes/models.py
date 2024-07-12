@@ -9,6 +9,11 @@ class TransacaoParcelada(models.Model):
     """
     Modelo para representar transações financeiras parceladas.
     """
+    class Meta:
+        db_table = 'tansacao_parcelada'
+        verbose_name = 'TransacaoParcela'
+        verbose_name_plural = 'TransacaoParceladas'
+
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     conta = models.ForeignKey(Conta, on_delete=models.CASCADE)
     data = models.DateField(default=datetime.date.today)
@@ -27,6 +32,11 @@ class Parcela(models.Model):
     """
     Modelo para representar parcelas de transações financeiras.
     """
+    class Meta:
+        db_table = 'parcela'
+        verbose_name = 'Parcela'
+        verbose_name_plural = 'Parcelas'
+
     transacao_parcelada = models.ForeignKey(TransacaoParcelada, on_delete=models.CASCADE)
     numero_parcela = models.PositiveIntegerField(null=False, blank=True)
     valor_parcela = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)
@@ -44,6 +54,11 @@ class Transacao(models.Model):
     """
     Modelo para representar transações financeiras.
     """
+    class Meta:
+        db_table = 'transacao'
+        verbose_name = 'Transacao'
+        verbose_name_plural = 'Transacoes'
+        
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     conta = models.ForeignKey(Conta, on_delete=models.CASCADE)
     data = models.DateField(default=datetime.date.today)
