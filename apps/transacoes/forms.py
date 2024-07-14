@@ -56,17 +56,6 @@ class TransacaoParceladaForm(forms.ModelForm):
             raise forms.ValidationError('O valor da transação deve ser maior que zero.')
 
         return valor
-    
-    def clean_categoria(self):
-        """
-        Aplica filtro por categoria no campo 'subcategoria'.
-        """
-        categoria_selecionada = self.cleaned_data['categoria']
-        subcategorias = Subcategoria.objects.filter(categoria=categoria_selecionada)
-
-        # Atualizar o campo 'subcategoria' com as opções filtradas
-        self.fields['subcategoria'].queryset = subcategorias
-        return categoria_selecionada
 
 class TransacaoForm(forms.ModelForm):
     """Formulário para transações."""
@@ -124,16 +113,6 @@ class TransacaoForm(forms.ModelForm):
 
         return valor
     
-    def clean_categoria(self):
-        """
-        Aplica filtro por categoria no campo 'subcategoria'.
-        """
-        categoria_selecionada = self.cleaned_data['categoria']
-        subcategorias = Subcategoria.objects.filter(categoria=categoria_selecionada)
-
-        # Atualizar o campo 'subcategoria' com as opções filtradas
-        self.fields['subcategoria'].queryset = subcategorias
-        return categoria_selecionada
     
 class ParcelaForm(forms.ModelForm):
     """Formulário para parcelas de transações."""

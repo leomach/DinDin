@@ -8,7 +8,7 @@ from ..categorias.models import Categoria
 from ..subcategorias.models import Subcategoria
 from .forms import TransacaoForm, TransacaoParceladaForm, ParcelaForm
 from django.core.paginator import Paginator
-import datetime
+from django.http import JsonResponse
 from dateutil.relativedelta import *
 
 def listar_transacoes(request):
@@ -152,6 +152,10 @@ def criar_transacao(request):
         'categorias': categorias,
         'subcategorias': subcategorias,
     })
+
+def get_subcategorias(request, categoria_id):
+    subcategorias = list(Subcategoria.objects.filter(categoria_id=categoria_id).values('id', 'nome'))
+    return JsonResponse(subcategorias, safe=False)
 
 @login_required
 def criar_transacao_parcelada(request):
