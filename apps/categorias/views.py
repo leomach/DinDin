@@ -40,7 +40,7 @@ def criar_categoria(request):
             except Exception as e:
                 messages.error(request, f'Erro ao criar categoria: {e}')
     else:
-        form = CategoriaForm(user=request.user)
+        form = CategoriaForm()
 
     return render(request, 'categorias/criar_categoria.html', {'form': form})
 
@@ -69,7 +69,7 @@ def editar_categoria(request, categoria_id):
                 messages.error(request, f'Erro ao editar categoria: {e}')
 
     else:
-        form = CategoriaForm(instance=categoria, user=request.user)
+        form = CategoriaForm(instance=categoria)
 
     return render(request, 'categorias/editar_categoria.html', {
         'categoria': categoria

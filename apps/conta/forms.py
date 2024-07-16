@@ -8,12 +8,12 @@ class ContaForms(forms.ModelForm):
 
     class Meta:
         model = Conta
-        exclude = ['saldo_atual', 'limite_atual', 'data_criacao', 'usuario',]
+        exclude = ['saldo_atual', 'data_criacao', 'usuario',]
         labels = {
             'nome': 'Nome',
             'descricao': 'Descrição',
             'saldo_inicial': 'Saldo Inicial',
-            'limite': 'Limite de crédito',
+            'limite': 'Limite total de crédito',
         }
         widgets = {
             'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Nubank'},),
