@@ -8,7 +8,7 @@ class ContaForms(forms.ModelForm):
 
     class Meta:
         model = Conta
-        exclude = ['saldo_atual', 'data_criacao', 'usuario',]
+        exclude = ['saldo_atual', 'data_criacao', 'usuario', 'limite_atual']
         labels = {
             'nome': 'Nome',
             'descricao': 'Descrição',

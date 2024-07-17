@@ -24,7 +24,7 @@ def login(request):
                 messages.success(request, f'{nome} logado com sucesso!')
                 return redirect('index')
             else:
-                messages.error(request, 'Erro ao efetuar o login')
+                messages.error(request, 'Usuário ou senha incorretos')
                 return redirect('login')
 
     return render(request, "usuarios/login.html", {'form': form})

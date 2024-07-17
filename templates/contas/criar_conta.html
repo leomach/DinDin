@@ -6,7 +6,7 @@
             <h1>Nova conta</h1>
         </div>
         <div class="form">
-            <form action="{% url 'add_conta' %}" method="POST">
+            <form action="{% url 'criar_conta' %}" method="POST">
                 {% csrf_token %}
                 {% for field in form.visible_fields %}
                 <div class="campo">

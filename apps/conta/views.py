@@ -15,14 +15,6 @@ def listar_contas(request):
     return render(request, 'contas/contas.html', {'contas': contas, 'usuario': usuario})
 
 @login_required
-def template_criar(request):
-    """
-    View para renderizar o template de criação de conta.
-    """
-    form = ContaForms
-    return render(request, 'contas/criar_conta.html', {'form': form})
-
-@login_required
 def criar_conta(request):
     """
     View para criar uma nova conta para o usuário logado.
@@ -56,9 +48,9 @@ def criar_conta(request):
             messages.success(request, 'Conta criada com sucesso!')
             return redirect('contas')
     else:
-        form = ContaForms(user=request.user)
+        form = ContaForms()
 
-    return render(request, 'contas/criar_conta.html')
+    return render(request, 'contas/criar_conta.html', {'form': form})
 
 @login_required
 def editar_conta(request, conta_id):
@@ -89,7 +81,7 @@ def editar_conta(request, conta_id):
             messages.success(request, 'Conta atualizada com sucesso!')
             return redirect('contas')
     else:
-        form = ContaForms(instance=conta, user=request.user)
+        form = ContaForms(instance=conta)
 
     return render(request, 'contas/editar_conta.html', {'form': form, 'conta': conta})
 

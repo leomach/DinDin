@@ -94,3 +94,8 @@ main {
     border-radius: 0;
     word-wrap: break-word;
 }
+
+.text-danger {
+    color: #680f0f;
+    font-size: small;
+}
