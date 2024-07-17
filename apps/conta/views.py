@@ -25,14 +25,8 @@ def criar_conta(request):
         if form.is_valid():
             nome = form.cleaned_data['nome']
             descricao = form.cleaned_data['descricao']
-            saldo_inicial = form.cleaned_data['saldo_inicial']
-            limite = form.cleaned_data['limite']
-
-            try:
-                saldo_inicial = float(saldo_inicial)
-            except ValueError:
-                messages.error(request, 'Saldo inicial inválido.')
-                return redirect('contas')
+            saldo_inicial = float(form.cleaned_data['saldo_inicial'])
+            limite = float(form.cleaned_data['limite'])
 
             usuario = request.user
 

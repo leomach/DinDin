@@ -95,7 +95,7 @@ main {
     word-wrap: break-word;
 }
 
-.text-danger {
-    color: #680f0f;
-    font-size: small;
+.texto-erro {
+    color: #b41919;
+    font-size: medium;
 }

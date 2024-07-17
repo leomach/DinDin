@@ -60,6 +60,7 @@
 
 .criar-subcategoria .campo input,
 .criar-subcategoria .campo select {
+    font-size: 16px;
     padding: 15px;
     width: 100%;
     border: solid 1px #0b8351;
