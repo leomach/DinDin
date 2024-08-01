@@ -20,8 +20,8 @@ class TransacaoParcelada(models.Model):
     descricao = models.CharField(max_length=255)
     parcelas = models.IntegerField(blank=False, null=False)
     valor_total = models.DecimalField(max_digits=10, decimal_places=2)
-    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, null=True, blank=True)
-    subcategoria = models.ForeignKey(Subcategoria, on_delete=models.CASCADE, null=True, blank=True)
+    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True)
+    subcategoria = models.ForeignKey(Subcategoria, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f'{self.descricao} - R${self.valor_total:.2f}'
@@ -65,8 +65,8 @@ class Transacao(models.Model):
     descricao = models.CharField(max_length=255)
     valor = models.DecimalField(max_digits=10, decimal_places=2)
     tipo = models.CharField(max_length=1, choices=[('R', 'Receita'), ('D', 'Despesa'),])
-    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, null=True, blank=True)
-    subcategoria = models.ForeignKey(Subcategoria, on_delete=models.CASCADE, null=True, blank=True)
+    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True)
+    subcategoria = models.ForeignKey(Subcategoria, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f'{self.descricao} - R${self.valor:.2f}'
