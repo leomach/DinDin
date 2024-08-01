@@ -159,15 +159,31 @@
                 {% for transacao in page.object_list %}
                     <tr>
                         <td>{{ transacao.data|date:"d/m/Y" }}</td>
+                        {% if transacao.descricao %}
                         <td>{{ transacao.descricao }}</td>
+                        {% else %}
+                        <td>{{transacao.transacao_parcelada.descricao}}</td>
+                        {% endif %}
+                        {% if transacao.valor %}
                         <td>R$ {{ transacao.valor|floatformat:2 }}</td>
+                        {% else %}
+                        <td>R$ {{transacao.valor_parcela|floatformat:2 }}</td>
+                        {% endif %}
                         {% if transacao.tipo == "R" %}
                             <td>Receita</td>
                         {% else %}
                             <td>Despesa</td>
                         {% endif %}
+                        {% if transacao.categoria %}
                         <td>{{ transacao.categoria.nome }}</td>
+                        {% else %}
+                        <td>{{transacao.transacao_parcelada.categoria.nome}}</td>
+                        {% endif %}
+                        {% if transacao.conta %}
                         <td>{{ transacao.conta.nome }}</td>
+                        {% else %}
+                        <td>{{transacao.transacao_parcelada.conta.nome}}</td>
+                        {% endif %}
                         <td>
                             <a href="{% url 'editar_transacao' transacao.pk %}" class="editar">#</a>
                             <a href="{% url 'excluir_transacao' transacao.pk %}" class="excluir">X</a>
