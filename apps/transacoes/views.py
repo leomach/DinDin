@@ -303,6 +303,68 @@ def editar_transacao(request, transacao_pk):
         'transacao': transacao,
     })
 
+@login_required
+def duplicar_transacao(request, transacao_pk):
+    """
+    View para duplicar uma transacao específica.
+    """
+    transacao = get_object_or_404(Transacao, pk=transacao_pk, usuario=request.user)
+    usuario = request.user
+
+    if request.method == 'POST':
+        form = TransacaoForm(request.POST, instance=transacao)
+
+        if form.is_valid():
+            conta = get_object_or_404(Conta, pk=form.cleaned_data['conta'].id, usuario=usuario)
+            data = form.cleaned_data['data']
+            descricao = form.cleaned_data['descricao']
+            valor = form.cleaned_data['valor']
+            tipo = form.cleaned_data['tipo']
+            categoria = form.cleaned_data['categoria']
+            subcategoria = form.cleaned_data['subcategoria']
+
+            try:
+                if tipo == 'D':
+                    valor_da_conta = conta.saldo_atual - valor
+                    conta.saldo_atual = valor_da_conta
+                else:
+                    valor_da_conta = conta.saldo_atual + valor
+                    conta.saldo_atual = valor_da_conta
+
+                conta.save()
+
+                Transacao.objects.create(
+                    usuario=usuario,
+                    conta=conta,
+                    data=data,
+                    descricao=descricao,
+                    valor=valor,
+                    tipo=tipo,
+                    categoria=categoria,
+                    subcategoria=subcategoria
+                )
+
+                messages.success(request, 'Transação duplicada com sucesso!')
+                return redirect('listar_transacoes')
+
+            except Exception as e:
+                messages.error(request, f'Erro ao editar transação: {e}')
+
+    else:
+        form = TransacaoForm(instance=transacao, user=request.user)
+
+    contas = Conta.objects.filter(usuario=request.user)
+    categorias = Categoria.objects.filter(usuario=request.user)
+    subcategorias = Subcategoria.objects.filter(usuario=request.user)
+
+    return render(request, 'transacoes/duplicar_transacao.html', {
+        'form': form,
+        'contas': contas,
+        'categorias': categorias,
+        'subcategorias': subcategorias,
+        'transacao': transacao,
+    })
+
 def editar_parcela(request, parcela_pk):
     """
     View para editar uma parcela específica.

@@ -52,6 +52,7 @@
                             <td>{{ transacao.categoria.nome }}</td>
                             <td>{{ transacao.conta.nome }}</td>
                             <td>
+                                <a href="{% url 'duplicar_transacao' transacao.pk %}" class="duplicar">++</a>
                                 <a href="{% url 'editar_transacao' transacao.pk %}" class="editar">#</a>
                                 <a href="{% url 'excluir_transacao' transacao.pk %}" class="excluir">X</a>
                             </td>
