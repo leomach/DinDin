@@ -79,7 +79,8 @@ def editar_subcategoria(request, categoria_pk, subcategoria_pk):
 
     return render(request, 'categorias/editar_subcategoria.html', {
         'categoria': categoria,
-        'subcategoria': subcategoria
+        'subcategoria': subcategoria,
+        'form': form
     })
 
 @login_required

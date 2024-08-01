@@ -72,6 +72,7 @@ def editar_categoria(request, categoria_id):
         form = CategoriaForm(instance=categoria)
 
     return render(request, 'categorias/editar_categoria.html', {
+        'form': form,
         'categoria': categoria
     })
 
