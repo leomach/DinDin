@@ -3,6 +3,7 @@ from .models import Categoria
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import CategoriaForm
+from django.core.paginator import Paginator
 
 def listar_categorias(request):
     """
@@ -11,8 +12,12 @@ def listar_categorias(request):
     usuario = request.user
     categorias = Categoria.objects.filter(usuario=usuario)
 
+    categorias_paginator = Paginator(categorias, 10)
+    page_num = request.GET.get('page')
+    page = categorias_paginator.get_page(page_num)
+
     return render(request, 'categorias/categorias.html', {
-        'categorias': categorias
+        'categorias': page
     })
 
 @login_required

@@ -7,7 +7,7 @@
             <a href="{% url 'criar_categoria' %}" class="btn">Nova categoria</a>
         </div>
         <div class="categorias-list">
-            {% for categoria in categorias %}
+            {% for categoria in categorias.object_list %}
             <div class="categoria">
                 <div class="info">
                     <h3>{{ categoria.nome }}</h3>
@@ -26,6 +26,15 @@
                     </div>
                 </div>
             {% endfor %}
+            <div class="paginacao">
+                {% if categorias.has_previous %}
+                    <a href="{% url 'listar_transacoes'%}?page={{ categorias.previous_page_number }}" class="btn">Anterior</a>
+                {% endif %}
+                <p>Página {{ categorias.number }} de {{ categorias.paginator.num_pages }}</p>
+                {% if categorias.has_next %}
+                    <a href="{% url 'listar_transacoes'%}?page={{ categorias.next_page_number }}" class="btn">Próximo</a>
+                {% endif %}
+            </div>
         </div>
     </section>
 {% endblock content %}
