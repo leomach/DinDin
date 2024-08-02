@@ -94,3 +94,8 @@ main {
     border-radius: 0;
     word-wrap: break-word;
 }
+
+.texto-erro {
+    color: #b41919;
+    font-size: medium;
+}
