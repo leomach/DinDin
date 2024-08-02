@@ -30,12 +30,14 @@ def criar_categoria(request):
         if form.is_valid():
             nome = form.cleaned_data['nome']
             descricao = form.cleaned_data['descricao']
+            tipo = form.cleaned_data['tipo']
 
             try:
                 categoria = Categoria.objects.create(
                     usuario=request.user,
                     nome=nome,
-                    descricao=descricao
+                    descricao=descricao,
+                    tipo=tipo,
                 )
                 categoria.save()
 
@@ -61,10 +63,12 @@ def editar_categoria(request, categoria_id):
         if form.is_valid():
             nome = form.cleaned_data['nome']
             descricao = form.cleaned_data['descricao']
+            tipo = form.cleaned_data['tipo']
 
             try:
                 categoria.nome = nome
                 categoria.descricao = descricao
+                categoria.tipo = tipo
                 categoria.save()
 
                 messages.success(request, 'Categoria atualizada com sucesso!')
