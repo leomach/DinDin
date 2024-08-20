@@ -166,6 +166,14 @@
     text-align: left;
 }
 
+.index .bloco .cards .card .categoria {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 66%;
+}
+
 
     .index .transacoes-list {
         display: flex;

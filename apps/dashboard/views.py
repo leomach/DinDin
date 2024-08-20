@@ -93,6 +93,22 @@ def index(request):
     economia = saldo_mes_anterior + saldo_mes_atual
     economia_anual = saldo_ano_anterior + saldo_ano_atual
 
+    # Categorias
+    c_despesas = []
+    c_receitas = []
+    categorias_despesas = Categoria.objects.filter(tipo=2)
+    categorias_receitas = Categoria.objects.filter(tipo=1)
+    for categoria in categorias_despesas:
+        despesas = transacoes_mes_atual.filter(categoria=categoria).aggregate(total=Sum('valor'))['total'] or 0
+        despesas_parcelas = parcelas_mes_atual.filter(transacao_parcelada__categoria=categoria).aggregate(saldo_total=Sum('valor_parcela'))['saldo_total'] or 0
+        total = despesas + despesas_parcelas
+        c_despesas.append({'nome': categoria.nome, 'total': total})
+    for categoria in categorias_receitas:
+        receitas = transacoes_mes_atual.filter(categoria=categoria).aggregate(total=Sum('valor'))['total'] or 0
+        receitas_parcelas = parcelas_mes_atual.filter(transacao_parcelada__categoria=categoria).aggregate(saldo_total=Sum('valor_parcela'))['saldo_total'] or 0
+        total = receitas + receitas_parcelas
+        c_receitas.append({'nome': categoria.nome, 'total': total})
+
     transacoes_e_parcelas_mes_atual.sort(key=lambda x: x.data, reverse=True)
 
     # Faz a paginação das transações
@@ -117,6 +133,9 @@ def index(request):
         'economia_anual':economia_anual,
         'saldo_total_contas': saldo_total_contas,
         'saldo_total_transacoes': saldo_total_transacoes,
+
+        'c_despesas': sorted(c_despesas, key=lambda x: x['total'], reverse=True),
+        'c_receitas': sorted(c_receitas, key=lambda x: x['total'], reverse=True),
 
         'diferenca_saldo': diferenca_saldo,
         'saldo_mes_atual': saldo_mes_atual,
