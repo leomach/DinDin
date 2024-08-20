@@ -154,6 +154,41 @@
                 </div>
             </div>
         </div>
+        <div class="bloco">
+            <div class="titulo">
+                <h4>Categorias</h4>
+            </div>
+            <div class="cards">
+                <h2 style="width: 80%; text-align: left; margin: 10px 0 5px 0; font-size: 1rem; color: #074e3f;">Receitas</h2>
+                {% for categoria_r in c_receitas_anual %}
+                <div class="card">
+                    <div class="icone">
+                        
+                    </div>
+                    <div class="titulos">
+                        <h4>{{categoria_r.nome}}</h4>
+                    </div>
+                    <div class="valor">
+                        <h4>R${{categoria_r.total}}</h4>
+                    </div>
+                </div>
+                {% endfor %}
+                <h2 style="width: 80%; text-align: left; margin: 10px 0 5px 0; font-size: 1rem; color: #4e0707;">Despesas</h2>
+                {% for categoria_d in c_despesas_anual %}
+                <div class="card">
+                    <div class="icone">
+                        
+                    </div>
+                    <div class="titulos">
+                        <h4>{{categoria_d.nome}}</h4>
+                    </div>
+                    <div class="valor">
+                        <h4>R${{categoria_d.total}}</h4>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
     <div class="bloco">
         <div class="titulo">
