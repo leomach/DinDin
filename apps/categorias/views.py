@@ -64,19 +64,17 @@ def editar_categoria(request, categoria_id):
             nome = form.cleaned_data['nome']
             descricao = form.cleaned_data['descricao']
             tipo = form.cleaned_data['tipo']
+            
+            categoria.nome = nome
+            categoria.descricao = descricao
+            categoria.tipo = tipo
+            categoria.save()
 
-            try:
-                categoria.nome = nome
-                categoria.descricao = descricao
-                categoria.tipo = tipo
-                categoria.save()
-
-                messages.success(request, 'Categoria atualizada com sucesso!')
-                return redirect('categorias')
-
-            except Exception as e:
-                messages.error(request, f'Erro ao editar categoria: {e}')
-
+            messages.success(request, 'Categoria atualizada com sucesso!')
+            return redirect('categorias')
+        else:
+            messages.error(request, 'Formulário inválido.')
+            return redirect('editar_categoria', categoria_id=categoria_id)
     else:
         form = CategoriaForm(instance=categoria)
 

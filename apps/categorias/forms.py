@@ -16,7 +16,7 @@ class CategoriaForm(forms.ModelForm):
             'tipo': 'Receitas ou despesas?'
         }
         widgets = {
-            'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Salário', 'required': True}),
+            'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Salário'}),
             'descricao': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Opcional'}),
             'tipo': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Receita/Despesa'})
         }
