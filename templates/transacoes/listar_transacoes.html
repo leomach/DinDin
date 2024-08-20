@@ -6,6 +6,9 @@
             <h1>Transações realizadas</h1>
             <a href="{% url 'criar_transacao' %}" class="btn">Nova transação</a>
             <a href="{% url 'criar_transacao_parcelada' %}" class="btn-parcelada">Nova transação parcelada</a>
+            <form action="#" method="GET">
+                <input type="text" id="search" name="search" placeholder="Pesquisar..." value="{{request.GET.search}}" class="search-bar">
+            </form>
         </div>
         <div class="transacoes-list">
             <table class="tabela-transacoes">
@@ -63,11 +66,11 @@
             </table>
             <div class="paginacao">
                 {% if page.has_previous %}
-                    <a href="{% url 'listar_transacoes'%}?page={{ page.previous_page_number }}" class="btn">Anterior</a>
+                    <a href="{% url 'listar_transacoes'%}?page={{ page.previous_page_number }}&search={{request.GET.search}}" class="btn">Anterior</a>
                 {% endif %}
                 <p>Página {{ page.number }} de {{ page.paginator.num_pages }}</p>
                 {% if page.has_next %}
-                    <a href="{% url 'listar_transacoes'%}?page={{ page.next_page_number }}" class="btn">Próximo</a>
+                    <a href="{% url 'listar_transacoes'%}?page={{ page.next_page_number }}&search={{request.GET.search}}" class="btn">Próximo</a>
                 {% endif %}
             </div>
         </div>

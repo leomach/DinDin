@@ -21,6 +21,12 @@ def listar_transacoes(request):
     transacoes = Transacao.objects.filter(usuario=usuario)
     transacoes_parceladas = TransacaoParcelada.objects.filter(usuario=usuario)
 
+    # Verifica se tem GET para search e filtra as transações
+    if request.GET.get('search'):
+        search = request.GET.get('search')
+        transacoes = transacoes.filter(descricao__icontains=search)
+        transacoes_parceladas = transacoes_parceladas.filter(descricao__icontains=search)
+
     def get_transacoes_e_parceladas(transacoes, transacoes_parceladas):
         # Combina as listas e ordena por data
         transacoes_e_parceladas = sorted(list(transacoes) + list(transacoes_parceladas), key=lambda obj: obj.data)

@@ -11,10 +11,22 @@
     display: flex;
     flex-direction: column;
     width: 80%;
+    gap: 10px;
 }
 
 .transacoes .title h1 {
     font-size: xx-large;
+}
+
+.transacoes .title .search-bar {
+    border-radius: 10px;
+    width: 15%;
+    height: 40px;
+    padding: 0 10px;
+    border: 2px solid #0b8351;
+    color: #0b8351;
+    background-color: transparent;
+    cursor: text;
 }
 
 @media screen and (max-width: 768px){
@@ -31,7 +43,6 @@
     background-color: #0b8351;
     width: max-content;
     padding: 4px 12px;
-    margin: 10px 0;
     border: solid 1px transparent;
     transition: all 0.3s;
 }
