@@ -99,3 +99,9 @@ main {
     color: #b41919;
     font-size: medium;
 }
+
+input[type='text'],
+input[type='number'],
+textarea {
+  font-size: 16px;
+}

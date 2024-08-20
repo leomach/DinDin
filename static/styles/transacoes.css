@@ -25,6 +25,7 @@
     padding: 0 10px;
     border: 2px solid #0b8351;
     color: #0b8351;
+    font-size: 16px;
     background-color: transparent;
     cursor: text;
 }
@@ -32,6 +33,10 @@
 @media screen and (max-width: 768px){
     .transacoes .title h1 {
         font-size: x-large;
+    }
+
+    .transacoes .title .search-bar {
+        width: 90%;
     }
 }
 
