@@ -6,7 +6,7 @@ from django.db.models import Sum
 from ..conta.models import Conta
 from ..categorias.models import Categoria
 from ..subcategorias.models import Subcategoria
-from .forms import TransacaoForm, TransacaoParceladaForm, ParcelaForm
+from .forms import TransacaoForm, TransacaoParceladaForm, ParcelaForm, TransferenciaForm
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from dateutil.relativedelta import *
@@ -118,32 +118,28 @@ def criar_transacao(request):
             categoria = form.cleaned_data['categoria']
             subcategoria = form.cleaned_data['subcategoria']
 
-            try:
-                if tipo == 'D':
-                    valor_da_conta = conta.saldo_atual - valor
-                    conta.saldo_atual = valor_da_conta
-                else:
-                    valor_da_conta = conta.saldo_atual + valor
-                    conta.saldo_atual = valor_da_conta
+            if tipo == 'D':
+                valor_da_conta = conta.saldo_atual - valor
+                conta.saldo_atual = valor_da_conta
+            else:
+                valor_da_conta = conta.saldo_atual + valor
+                conta.saldo_atual = valor_da_conta
 
-                conta.save()
+            conta.save()
 
-                Transacao.objects.create(
-                    usuario=usuario,
-                    conta=conta,
-                    data=data,
-                    descricao=descricao,
-                    valor=valor,
-                    tipo=tipo,
-                    categoria=categoria,
-                    subcategoria=subcategoria
-                )
+            Transacao.objects.create(
+                usuario=usuario,
+                conta=conta,
+                data=data,
+                descricao=descricao,
+                valor=valor,
+                tipo=tipo,
+                categoria=categoria,
+                subcategoria=subcategoria
+            )
 
-                messages.success(request, 'Transação criada com sucesso!')
-                return redirect('listar_transacoes')
-
-            except Exception as e:
-                messages.error(request, f'Erro ao criar transação: {e}')
+            messages.success(request, 'Transação criada com sucesso!')
+            return redirect('listar_transacoes')
 
     else:
         form = TransacaoForm(user=request.user)
@@ -243,6 +239,111 @@ def criar_transacao_parcelada(request):
         'subcategorias': subcategorias,
     })
 
+@login_required
+def criar_transacao_transferencia(request):
+    """
+    View para criar uma nova transferência.
+    """
+    if request.method == 'POST':
+        form = TransferenciaForm(request.POST)
+
+        if form.is_valid():
+            usuario = request.user
+            conta = form.cleaned_data['conta']
+            conta_destino = form.cleaned_data['conta_destino']
+            data = form.cleaned_data['data']
+            descricao = form.cleaned_data['descricao']
+            valor = form.cleaned_data['valor']
+            tipo = 'T'
+            categoria = form.cleaned_data['categoria']
+            subcategoria = form.cleaned_data['subcategoria']
+
+            valor_da_conta = conta.saldo_atual - valor
+            conta.saldo_atual = valor_da_conta
+            valor_da_conta_destino = conta_destino.saldo_atual + valor
+            conta_destino.saldo_atual = valor_da_conta_destino
+
+            conta.save()
+            conta_destino.save()
+
+            Transacao.objects.create(
+                usuario=usuario,
+                conta=conta,
+                conta_destino=conta_destino,
+                data=data,
+                descricao=descricao,
+                valor=valor,
+                tipo=tipo,
+                categoria=categoria,
+                subcategoria=subcategoria
+            )
+
+            messages.success(request, 'Transação criada com sucesso!')
+            return redirect('listar_transacoes')
+
+    else:
+        form = TransferenciaForm(user=request.user)
+
+    return render(request, 'transacoes/criar_transferencia.html', {
+        'form': form,
+    })
+
+@login_required
+def editar_transacao_transferencia(request, transacao_pk):
+    """
+    View para editar uma transacao de transferencia específica.
+    """
+    transacao = get_object_or_404(Transacao, pk=transacao_pk, usuario=request.user, tipo='T')
+    usuario = request.user
+
+    if request.method == 'POST':
+        form = TransferenciaForm(request.POST, instance=transacao)
+
+        if form.is_valid():
+            conta = form.cleaned_data['conta']
+            conta_destino = form.cleaned_data['conta_destino']
+            data = form.cleaned_data['data']
+            descricao = form.cleaned_data['descricao']
+            valor = form.cleaned_data['valor']
+            tipo = 'T'
+            categoria = form.cleaned_data['categoria']
+            subcategoria = form.cleaned_data['subcategoria']
+
+            # Atualiza o saldo das contas
+            valor_da_transacao_antiga = transacao.valor
+            valor_da_conta_origem_antiga = transacao.conta.saldo_atual + valor_da_transacao_antiga
+            valor_da_conta_destino_antiga = transacao.conta_destino.saldo_atual - valor_da_transacao_antiga
+            transacao.conta.saldo_atual = valor_da_conta_origem_antiga
+            transacao.conta_destino.saldo_atual = valor_da_conta_destino_antiga
+            transacao.conta.save()
+            transacao.conta_destino.save()
+
+            valor_da_conta = conta.saldo_atual - valor
+            conta.saldo_atual = valor_da_conta
+            valor_da_conta_destino = conta_destino.saldo_atual + valor
+            conta_destino.saldo_atual = valor_da_conta_destino
+
+            conta.save()
+            conta_destino.save()
+
+            # Atualiza a transacao
+            transacao.conta = conta
+            transacao.conta_destino = conta_destino
+            transacao.data = data
+            transacao.descricao = descricao
+            transacao.valor = valor
+            transacao.tipo = tipo
+            transacao.categoria = categoria
+            transacao.subcategoria = subcategoria
+            transacao.save()
+            
+            messages.success(request, 'Transação editada com sucesso!')
+            return redirect('listar_transacoes')
+        else:
+            form = TransferenciaForm(instance=transacao)
+    else:
+        form = TransferenciaForm(instance=transacao)
+        return render(request, 'transacoes/editar_transferencia.html', {'form': form})
 
 @login_required
 def editar_transacao(request, transacao_pk):
@@ -456,3 +557,22 @@ def excluir_transacao_parcelada(request, transacao_pk):
     except Exception as e:
         messages.error(request, f'Erro ao excluir transação: {e}')
         return HttpResponse(f"Erro: {e}")
+    
+@login_required
+def excluir_transferencia(request, transacao_pk):
+    """
+    View para excluir uma transferencia específica.
+    """
+    transacao = get_object_or_404(Transacao, pk=transacao_pk, usuario=request.user, tipo='T')
+
+    # Atualiza o saldo das contas de origem e destino após a exclusão da transferencia
+    saldo_da_conta_origem = transacao.conta.saldo_atual + transacao.valor
+    transacao.conta.saldo_atual = saldo_da_conta_origem
+    saldo_da_conta_destino = transacao.conta_destino.saldo_atual - transacao.valor
+    transacao.conta_destino.saldo_atual = saldo_da_conta_destino
+    transacao.conta.save()
+    transacao.conta_destino.save()
+    transacao.delete()
+
+    messages.success(request, 'Transferência excluída com sucesso!')
+    return redirect('listar_transacoes')

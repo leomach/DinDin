@@ -72,7 +72,7 @@ class TransacaoForm(forms.ModelForm):
             'categoria',
             'subcategoria',
         ]
-        exclude = ['id', 'usuario']
+        exclude = ['id', 'usuario', 'conta_destino']
         labels = {
             'data': 'Data',
             'descricao': 'Descrição',
@@ -86,7 +86,7 @@ class TransacaoForm(forms.ModelForm):
             'data': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'descricao': forms.TextInput(attrs={'class': 'form-control'}),
             'valor': forms.NumberInput(attrs={'class': 'form-control'}),
-            'tipo': forms.Select(attrs={'class': 'form-control'}),
+            'tipo': forms.Select(attrs={'class': 'form-control'}, choices=[('R', 'Receita'), ('D', 'Despesa'),]),
             'conta': forms.Select(attrs={'class': 'form-control'},),
             'categoria': forms.Select(attrs={'class': 'form-control', 'id': 'field-categoria'}),
             'subcategoria': forms.Select(attrs={'class': 'form-control', 'id': 'field-subcategoria'}),
@@ -98,6 +98,63 @@ class TransacaoForm(forms.ModelForm):
         
         if user:
             self.fields['conta'].queryset = Conta.objects.filter(usuario=user)
+            self.fields['categoria'].queryset = Categoria.objects.filter(usuario=user)
+            self.fields['subcategoria'].queryset = Subcategoria.objects.filter(usuario=user)
+        
+
+    def clean_valor(self):
+        """
+        Valida o campo 'valor'.
+        """
+        valor = self.cleaned_data['valor']
+
+        if valor <= 0:
+            raise forms.ValidationError('O valor da transação deve ser maior que zero.')
+
+        return valor
+    
+class TransferenciaForm(forms.ModelForm):
+    """Formulário para transferencias."""
+    
+
+    class Meta:
+        model = Transacao
+        fields = [
+            'data',
+            'descricao',
+            'valor',
+            'conta',
+            'categoria',
+            'subcategoria',
+            'conta_destino',
+        ]
+        exclude = ['id', 'usuario', 'tipo']
+        labels = {
+            'data': 'Data',
+            'descricao': 'Descrição',
+            'valor': 'Valor',
+            'conta': 'Conta',
+            'conta_destino': 'Conta de destino',
+            'categoria': 'Categoria',
+            'subcategoria': 'Subcategoria',
+        }
+        widgets = {
+            'data': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'descricao': forms.TextInput(attrs={'class': 'form-control'}),
+            'valor': forms.NumberInput(attrs={'class': 'form-control'}),
+            'conta': forms.Select(attrs={'class': 'form-control'},),
+            'conta_destino': forms.Select(attrs={'class': 'form-control'}),
+            'categoria': forms.Select(attrs={'class': 'form-control', 'id': 'field-categoria'}),
+            'subcategoria': forms.Select(attrs={'class': 'form-control', 'id': 'field-subcategoria'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if user:
+            self.fields['conta'].queryset = Conta.objects.filter(usuario=user)
+            self.fields['conta_destino'].queryset = Conta.objects.filter(usuario=user)
             self.fields['categoria'].queryset = Categoria.objects.filter(usuario=user)
             self.fields['subcategoria'].queryset = Subcategoria.objects.filter(usuario=user)
         

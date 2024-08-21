@@ -60,13 +60,14 @@ class Transacao(models.Model):
         verbose_name_plural = 'Transacoes'
         
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    conta = models.ForeignKey(Conta, on_delete=models.CASCADE)
+    conta = models.ForeignKey(Conta, on_delete=models.CASCADE, verbose_name="conta", related_name="conta")
     data = models.DateField(default=datetime.date.today)
     descricao = models.CharField(max_length=255)
     valor = models.DecimalField(max_digits=10, decimal_places=2)
-    tipo = models.CharField(max_length=1, choices=[('R', 'Receita'), ('D', 'Despesa'),])
+    tipo = models.CharField(max_length=1, null=False, blank=False, default='D')
     categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True)
     subcategoria = models.ForeignKey(Subcategoria, on_delete=models.SET_NULL, null=True, blank=True)
+    conta_destino = models.ForeignKey(Conta, on_delete=models.CASCADE, null=True, blank=True, default=None, verbose_name="conta_destino", related_name="conta_destino")
 
     def __str__(self):
         return f'{self.descricao} - R${self.valor:.2f}'
