@@ -18,6 +18,12 @@
     font-size: xx-large;
 }
 
+.transacoes .title .botoes {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
 .transacoes .title .search-bar {
     border-radius: 10px;
     width: 15%;
@@ -37,6 +43,12 @@
 
     .transacoes .title .search-bar {
         width: 90%;
+    }
+
+    .transacoes .title .botoes {
+        gap: 20px;
+        width: 90%;
+        justify-content: space-between;
     }
 }
 

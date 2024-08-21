@@ -1,0 +1,25 @@
+{% extends "shared/base.html"%}
+{% load static %}
+{% block content %}
+    <section class="criar-transacao">
+        <div class="title">
+            <h1>Nova transferência</h1>
+        </div>
+        <div class="form">
+            <form action="{% url 'criar_transacao_transferencia' %}" method="POST">
+                {% csrf_token %}
+                {% for field in form.visible_fields %}
+                <div class="campo">
+                    <label for="{{ field.id_for_label }}">{{field.label}}</label>
+                    {{ field }}
+                    {% for error in field.errors %}
+                        <p class="text-danger text-sm">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+                <button type="submit" id="btnSubmit" class="btn">Salvar</button>
+            </form>
+        </div>
+    </section>
+    <script src="{% static '/scripts/filtro_categorias.js' %}"></script>
+{% endblock %}

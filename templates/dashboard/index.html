@@ -203,13 +203,27 @@
                 </div>
                 <div class="titulos">
                     <h4>Saldo Líquido</h4>
-                    <h3>Todas as contas</h3>
                 </div>
                 <div class="valor">
                     <h4>R${{saldo_total_contas}}</h4>
                     <h3></h3>
                 </div>
             </div>
+            {% for conta in contas %}
+            <div class="card">
+                <div class="icone">
+                    <div class="icone-despesa">
+                        
+                    </div>
+                </div>
+                <div class="titulos">
+                    <h3>{{conta.nome}}</h3>
+                </div>
+                <div class="valor">
+                    <h3>R${{conta.saldo_atual}}</h3>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
     <div id="transacoes_mes" class="transacoes-list">

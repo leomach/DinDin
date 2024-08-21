@@ -4,8 +4,11 @@
 <section class="transacoes">
         <div class="title">
             <h1>Transações realizadas</h1>
-            <a href="{% url 'criar_transacao' %}" class="btn">Nova transação</a>
-            <a href="{% url 'criar_transacao_parcelada' %}" class="btn-parcelada">Nova transação parcelada</a>
+            <div class="botoes">
+                <a href="{% url 'criar_transacao' %}" class="btn"><i class="fa-solid fa-right-left"></i></a>
+                <a href="{% url 'criar_transacao_parcelada' %}" class="btn-parcelada"><i class="fa-solid fa-divide"></i></a>
+                <a href="{% url 'criar_transacao_transferencia' %}" class="btn"><i class="fa-solid fa-rotate"></i></a>
+            </div>
             <form action="#" method="GET">
                 <input type="text" id="search" name="search" placeholder="Pesquisar..." value="{{request.GET.search}}" class="search-bar">
             </form>
@@ -42,6 +45,19 @@
                                 <a href="{% url 'excluir_transacao_parcelada' transacao.pk %}" class="excluir">X</a>
                             </td>
                         </tr>
+                    {% elif transicao.tipo == 'T' %}
+                        <tr>
+                            <td>{{ transacao.data|date:"d/m/Y" }}</td>
+                            <td>{{ transacao.conta.nome }}</td>
+                            <td>R$ {{ transacao.valor|floatformat:2 }}</td>
+                            <td>Transferência</td>
+                            <td>{{ transacao.categoria.nome }}</td>
+                            <td>{{ transacao.conta_destino.nome }}</td>
+                            <td>
+                                <a href="{% url 'editar_transacao_transferencia' transacao.pk %}" class="editar">#</a>
+                                <a href="{% url 'excluir_transferencia' transacao.pk %}" class="excluir">X</a>
+                            </td>
+                        </tr>
                     {% else %}
                         <tr>
                             <td>{{ transacao.data|date:"d/m/Y" }}</td>
@@ -74,5 +90,5 @@
                 {% endif %}
             </div>
         </div>
-</section>
+    </section>
 {% endblock %}
