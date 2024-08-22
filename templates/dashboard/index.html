@@ -6,9 +6,30 @@
 <section class="index">
     <div class="topo">
         <div class="titulo">
-            <p onclick="timeToggle()" class="" id="mensal">< MENSAL ></p>
-            <p onclick="timeToggle()" class="none" id="anual">< ANUAL ></p>
+            {% if request.GET.time == 'ano' %}
+            <a style="text-decoration: none; color: #fff;" href="{% url 'index' %}?time=mes" id="anual"><- ANUAL -></a>
+            {% else %}
+            <a style="text-decoration: none; color: #fff;" href="{% url 'index' %}?time=ano" id="mensal"><- MENSAL -></a>
+            {% endif %}
         </div>
+        {% if request.GET.time == 'ano' %}
+        <div id="gerais_ano" style="width:100%;" class="">
+            <div class="gerais">
+                <div class="info">
+                    <h4>Anterior</h4>
+                    <p>R${{saldo_ano_anterior}}</p>
+                </div>
+                <div class="info-principal">
+                    <h4>Economia</h4>
+                    <p>R${{saldo_ano_atual}}</p>
+                </div>
+                <div class="info">
+                    <h4>Economia</h4>
+                    <p>R${{economia_anual}}</p>
+                </div>
+            </div>
+        </div>
+        {% else %}
         <div id="gerais_mes" style="width:100%;" class="">
             <div class="gerais">
                 <div class="info">
@@ -25,23 +46,84 @@
                 </div>
             </div>
         </div>
-        <div id="gerais_ano" style="width:100%;" class="none">
-            <div class="gerais">
-                <div class="info">
-                    <h4>Anterior</h4>
-                    <p>R${{saldo_ano_anterior}}</p>
+        {% endif %}
+    </div>
+    {% if request.GET.time == 'ano' %}
+    <div class="blocos" id="blocos_ano">
+        <div class="bloco">
+            <div class="titulo">
+                <h4>Ano atual</h4>
+            </div>
+            <div class="cards">
+                <div class="card">
+                    <div class="icone">
+                        <div class="icone-receita">
+                            <i class="fa-sharp fa-solid fa-arrow-up"></i>
+                        </div>
+                    </div>
+                    <div class="titulos">
+                        <h4>Receitas</h4>
+                        <h3>Ano anterior</h3>
+                    </div>
+                    <div class="valor">
+                        <h4>R${{transacoes_receitas_ano_atual}}</h4>
+                        <h3>R${{receitas_ano_anterior}}</h3>
+                    </div>
                 </div>
-                <div class="info-principal">
-                    <h4>Economia</h4>
-                    <p>R${{saldo_ano_atual}}</p>
-                </div>
-                <div class="info">
-                    <h4>Economia</h4>
-                    <p>R${{economia_anual}}</p>
+                <div class="card">
+                    <div class="icone">
+                        <div class="icone-despesa">
+                            <i class="fa-sharp fa-solid fa-arrow-down"></i>
+                        </div>
+                    </div>
+                    <div class="titulos">
+                        <h4>Despesas</h4>
+                        <h3>Ano anterior</h3>
+                    </div>
+                    <div class="valor">
+                        <h4>R${{despesas_ano_atual}}</h4>
+                        <h3>R${{despesas_ano_anterior}}</h3>
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="bloco">
+            <div class="titulo">
+                <h4>Categorias</h4>
+            </div>
+            <div class="cards">
+                <h2 style="width: 80%; text-align: left; margin: 10px 0 5px 0; font-size: 1rem; color: #074e3f;">Receitas</h2>
+                {% for categoria_r in c_receitas_anual %}
+                <div class="card">
+                    <div class="icone">
+                        
+                    </div>
+                    <div class="titulos">
+                        <h4>{{categoria_r.nome}}</h4>
+                    </div>
+                    <div class="valor">
+                        <h4>R${{categoria_r.total}}</h4>
+                    </div>
+                </div>
+                {% endfor %}
+                <h2 style="width: 80%; text-align: left; margin: 10px 0 5px 0; font-size: 1rem; color: #4e0707;">Despesas</h2>
+                {% for categoria_d in c_despesas_anual %}
+                <div class="card">
+                    <div class="icone">
+                        
+                    </div>
+                    <div class="titulos">
+                        <h4>{{categoria_d.nome}}</h4>
+                    </div>
+                    <div class="valor">
+                        <h4>R${{categoria_d.total}}</h4>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
+    {% else %}
     <div class="blocos" id="blocos_mes">
         <div class="bloco">
             <div class="titulo">
@@ -116,80 +198,7 @@
             </div>
         </div>
     </div>
-    <div class="none" id="blocos_ano">
-        <div class="bloco">
-            <div class="titulo">
-                <h4>Ano atual</h4>
-            </div>
-            <div class="cards">
-                <div class="card">
-                    <div class="icone">
-                        <div class="icone-receita">
-                            <i class="fa-sharp fa-solid fa-arrow-up"></i>
-                        </div>
-                    </div>
-                    <div class="titulos">
-                        <h4>Receitas</h4>
-                        <h3>Ano anterior</h3>
-                    </div>
-                    <div class="valor">
-                        <h4>R${{transacoes_receitas_ano_atual}}</h4>
-                        <h3>R${{receitas_ano_anterior}}</h3>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="icone">
-                        <div class="icone-despesa">
-                            <i class="fa-sharp fa-solid fa-arrow-down"></i>
-                        </div>
-                    </div>
-                    <div class="titulos">
-                        <h4>Despesas</h4>
-                        <h3>Ano anterior</h3>
-                    </div>
-                    <div class="valor">
-                        <h4>R${{despesas_ano_atual}}</h4>
-                        <h3>R${{despesas_ano_anterior}}</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="bloco">
-            <div class="titulo">
-                <h4>Categorias</h4>
-            </div>
-            <div class="cards">
-                <h2 style="width: 80%; text-align: left; margin: 10px 0 5px 0; font-size: 1rem; color: #074e3f;">Receitas</h2>
-                {% for categoria_r in c_receitas_anual %}
-                <div class="card">
-                    <div class="icone">
-                        
-                    </div>
-                    <div class="titulos">
-                        <h4>{{categoria_r.nome}}</h4>
-                    </div>
-                    <div class="valor">
-                        <h4>R${{categoria_r.total}}</h4>
-                    </div>
-                </div>
-                {% endfor %}
-                <h2 style="width: 80%; text-align: left; margin: 10px 0 5px 0; font-size: 1rem; color: #4e0707;">Despesas</h2>
-                {% for categoria_d in c_despesas_anual %}
-                <div class="card">
-                    <div class="icone">
-                        
-                    </div>
-                    <div class="titulos">
-                        <h4>{{categoria_d.nome}}</h4>
-                    </div>
-                    <div class="valor">
-                        <h4>R${{categoria_d.total}}</h4>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+    {% endif %}
     <div class="bloco">
         <div class="titulo">
             <h4>Contas</h4>
@@ -226,6 +235,8 @@
             {% endfor %}
         </div>
     </div>
+    {% if request.GET.time == 'ano' %}
+    {% else %}
     <div id="transacoes_mes" class="transacoes-list">
         <table class="tabela-transacoes">
             <thead>
@@ -286,6 +297,7 @@
             {% endif %}
         </div>
     </div>
+    {% endif %}
 </section>
 <script src="{% static 'scripts/home.js' %}"></script>
 {% endblock %}
