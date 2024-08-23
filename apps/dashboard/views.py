@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from datetime import datetime
 from django.core.paginator import Paginator
+import csv
+from django.http import HttpResponse
 
 def get_lista1_lista2(lista1, lista2):
     # Combina as listas e ordena por data
@@ -185,3 +187,18 @@ def index(request):
     
     return render(request, "dashboard/index.html", contexto)
 
+@login_required
+def graficos_anuais(request):
+    # Cria o objeto HttpResponse com o cabeçalho CSV apropriado.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=relatorio-anual.csv'
+    transacoes = Transacao.objects.all().order_by('-data')
+
+    writer = csv.writer(response)
+    writer.writerow(['Descrição', 'Valor', 'Tipo', 'Data', 'Usuário'])
+    for t in transacoes:
+        writer.writerow([f'{t.descricao}', f'{t.valor}', f'{t.tipo}', f'{t.data}', f'{t.usuario.username}'])
+
+    return response
+    # contexto = {}
+    # return render(request, "dashboard/graficos_anual.html", contexto)

@@ -2,7 +2,7 @@ from django.urls import path
 from .views import listar_transacoes, criar_transacao, editar_transacao, \
     excluir_transacao, criar_transacao_parcelada, excluir_transacao_parcelada, listar_parcelas, \
     toggle_status_parcela, editar_parcela, get_subcategorias, duplicar_transacao, criar_transacao_transferencia, \
-    editar_transacao_transferencia, excluir_transferencia
+    editar_transacao_transferencia, excluir_transferencia, efetuar_transacao_modelo
 
 urlpatterns = [
     path('transacoes/', listar_transacoes, name='listar_transacoes'),
@@ -19,4 +19,5 @@ urlpatterns = [
     path('toggle_status_parcela/<int:parcela_id>/', toggle_status_parcela, name='toggle_status_parcela'),
     path('excluir_transacao/<int:transacao_pk>/', excluir_transacao, name='excluir_transacao'),
     path('excluir_transacao_parcelada/<int:transacao_pk>/', excluir_transacao_parcelada, name='excluir_transacao_parcelada'),
+    path('efetuar_transacao_modelo/', efetuar_transacao_modelo, name='efetuar_transacao_modelo'),
 ]

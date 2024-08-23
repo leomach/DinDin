@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
-from .models import Transacao, TransacaoParcelada, Parcela
+from .models import Transacao, TransacaoParcelada, Parcela, TransacaoModelo
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Sum
@@ -20,6 +20,7 @@ def listar_transacoes(request):
     # Busca as transações e transações parceladas separadamente
     transacoes = Transacao.objects.filter(usuario=usuario)
     transacoes_parceladas = TransacaoParcelada.objects.filter(usuario=usuario)
+    transacoes_modelo = TransacaoModelo.objects.filter(usuario=usuario)
 
     # Verifica se tem GET para search e filtra as transações
     if request.GET.get('search'):
@@ -51,6 +52,7 @@ def listar_transacoes(request):
 
     return render(request, 'transacoes/listar_transacoes.html', {
         'page': page,
+        'transacoes_modelo': transacoes_modelo,
         'saldo_total_contas': saldo_total_contas,
         'saldo_total_transacoes': saldo_total_transacoes,
         'diferenca_saldo': diferenca_saldo,
@@ -576,3 +578,139 @@ def excluir_transferencia(request, transacao_pk):
 
     messages.success(request, 'Transferência excluída com sucesso!')
     return redirect('listar_transacoes')
+
+@login_required
+def listar_transacoes_modelo(request):
+    """
+    View para listar transacoes modelo.
+    """
+    usuario = request.user
+    transacoes = TransacaoModelo.objects.filter(usuario=usuario)
+
+    return render(request, 'transacoes/listar_transacoes_modelo.html', {'transacoes': transacoes})
+
+@login_required
+def criar_transacao_modelo(request):
+    """
+    View para criar um novo modelo de transacao.
+    """
+
+    if request.method == 'POST':
+        form = TransacaoForm(request.POST, user=usuario)
+
+        if form.is_valid():
+            usuario = request.user
+            conta = get_object_or_404(Conta, pk=form.cleaned_data['conta'].id, usuario=usuario)
+            data = form.cleaned_data['data']
+            descricao = form.cleaned_data['descricao']
+            valor = form.cleaned_data['valor']
+            tipo = form.cleaned_data['tipo']
+            categoria = form.cleaned_data['categoria']
+            subcategoria = form.cleaned_data['subcategoria']
+
+            TransacaoModelo.objects.create(
+                usuario=usuario,
+                conta=conta,
+                data=data,
+                descricao=descricao,
+                valor=valor,
+                tipo=tipo,
+                categoria=categoria,
+                subcategoria=subcategoria,
+            )
+
+            messages.success(request, 'Modelo de transacao criado com sucesso!')
+            return redirect('listar_transacoes')
+        else:
+            messages.error(request, 'Erro: Formulário inválido')
+            return redirect('criar_transacao_modelo')
+    else:
+        form = TransacaoForm(user=request.user)
+
+    return render(request, 'transacoes/criar_transacao_modelo.html', {'form': form})
+
+@login_required
+def editar_transacao_modelo(request, transacao_pk):
+    """
+    View para editar um modelo de transacao.
+    """
+    transacao_modelo = get_object_or_404(TransacaoModelo, pk=transacao_pk, usuario=request.user)
+
+    if request.method == 'POST':
+        form = TransacaoForm(request.POST, instance=transacao_modelo, user=request.user)
+
+        if form.is_valid():
+            usuario = request.user
+            conta = get_object_or_404(Conta, pk=form.cleaned_data['conta'].id, usuario=usuario)
+            data = form.cleaned_data['data']
+            descricao = form.cleaned_data['descricao']
+            valor = form.cleaned_data['valor']
+            tipo = form.cleaned_data['tipo']
+            categoria = form.cleaned_data['categoria']
+            subcategoria = form.cleaned_data['subcategoria']
+
+            transacao_modelo.conta = conta
+            transacao_modelo.data = data
+            transacao_modelo.descricao = descricao
+            transacao_modelo.valor = valor
+            transacao_modelo.tipo = tipo
+            transacao_modelo.categoria = categoria
+            transacao_modelo.subcategoria = subcategoria
+            transacao_modelo.save()
+
+            messages.success(request, 'Modelo de transacao editado com sucesso!')
+            return redirect('listar_transacoes')
+        else:
+            messages.error(request, 'Erro: Formulário inválido')
+            return redirect('editar_transacao_modelo', transacao_pk=transacao_pk)
+    else:
+        form = TransacaoForm(instance=transacao_modelo, user=request.user)
+
+    return render(request, 'transacoes/editar_transacao_modelo.html', {'form': form})
+
+@login_required
+def efetuar_transacao_modelo(request):
+    """
+    View para efetuar uma transacao a partir de um modelo de transacao.
+    """
+
+    if request.method == 'POST':
+        usuario = request.user
+        transacao_modelo = get_object_or_404(TransacaoModelo, pk=request.POST.get('transacao_modelo'), usuario=usuario)
+        conta = transacao_modelo.conta
+        data = transacao_modelo.data
+        descricao = transacao_modelo.descricao
+        valor = transacao_modelo.valor
+        tipo = transacao_modelo.tipo
+        categoria = transacao_modelo.categoria
+        subcategoria = transacao_modelo.subcategoria
+        quantidade = request.POST.get('quantidade')
+
+        for t in range(1, int(quantidade)):
+            Transacao.objects.create(
+                usuario=usuario,
+                conta=conta,
+                data=data,
+                descricao=descricao,
+                valor=valor,
+                tipo=tipo,
+                categoria=categoria,
+                subcategoria=subcategoria,
+            )
+        
+        messages.success(request, 'Transações criadas com sucesso!')
+        return redirect('listar_transacoes')
+    else:
+        messages.error(request, 'Você deve preencher o formulário de modelo de transação.')
+        return redirect('listar_transacoes')
+    
+@login_required
+def excluir_transacoes_modelo(request, transacao_pk):
+    """
+    View para excluir transacoes modelo.
+    """
+    transacao_modelo = get_object_or_404(TransacaoModelo, pk=transacao_pk, usuario=request.user)
+    transacao_modelo.delete()
+    messages.success(request, 'Modelo de transacoes excluído com sucesso!')
+    return redirect('listar_transacoes_modelo')
+    

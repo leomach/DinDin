@@ -1,0 +1,58 @@
+{% extends "shared/base.html" %}
+{% load static %}
+{% block content %}
+
+<section class="graficos-anuais">
+    <canvas id="myChart" width="400" height="200"></canvas>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js" integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 2. Dados para o gráfico
+        const data = {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            datasets: [
+                {
+                    label: 'Receitas',
+                    data: [65, 59, 80, 81, 56, 55, 40],
+                    borderColor: 'green',
+                    backgroundColor: 'rgba(0, 255, 0, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Despesas',
+                    data: [28, 48, 40, 19, 86, 27, 90],
+                    borderColor: 'red',
+                    backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }
+            ]
+        };
+
+        // 3. Configuração do gráfico
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        display: true,
+                        suggestedMin: 0, // ajusta o valor mínimo
+                        suggestedMax: 100 // ajusta o valor máximo
+                    }
+                }
+            }
+        };
+        
+
+        // 4. Inicializar o gráfico
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+    });
+</script>
+{% endblock %}

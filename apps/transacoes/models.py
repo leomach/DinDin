@@ -93,3 +93,46 @@ class Transacao(models.Model):
         else:
             return 'Receita'
 
+class TransacaoModelo(models.Model):
+    """
+    Modelo para representar transações financeiras modelo.
+    """
+    class Meta:
+        db_table = 'transacao_modelo'
+        verbose_name = 'TransacaoModelo'
+        verbose_name_plural = 'TransacoesModelo'
+        
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    conta = models.ForeignKey(Conta, on_delete=models.CASCADE, verbose_name="conta_transacao_modelo", related_name="conta_transacao_modelo")
+    data = models.DateField(default=datetime.date.today)
+    descricao = models.CharField(max_length=255)
+    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    tipo = models.CharField(max_length=1, null=False, blank=False, default='D')
+    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True)
+    subcategoria = models.ForeignKey(Subcategoria, on_delete=models.SET_NULL, null=True, blank=True)
+    conta_destino = models.ForeignKey(Conta, on_delete=models.CASCADE, null=True, blank=True, default=None, verbose_name="conta_destino_transacao_modelo", related_name="conta_destino_transacao_modelo")
+
+    def __str__(self):
+        return f'{self.descricao} - R${self.valor:.2f}'
+
+    def resumo(self):
+        """
+        Retorna um resumo da transação em formato de string.
+        """
+        resumo = f'{self.data.strftime("%d/%m/%Y")}: {self.descricao}'
+        if self.categoria:
+            resumo += f' (Categoria: {self.categoria.nome})'
+        if self.subcategoria:
+            resumo += f' (Subcategoria: {self.subcategoria.nome})'
+        resumo += f' - R${self.valor:.2f} ({self.get_tipo_display()})'
+        return resumo
+
+    def get_tipo_display(self):
+        """
+        Retorna a descrição do tipo de transação (Débito ou Crédito).
+        """
+        if self.tipo == 'D':
+            return 'Despesa'
+        else:
+            return 'Receita'
+
