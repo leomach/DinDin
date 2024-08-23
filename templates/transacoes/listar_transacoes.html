@@ -8,6 +8,7 @@
                 <a href="{% url 'criar_transacao' %}" class="btn"><i class="fa-solid fa-right-left"></i></a>
                 <a href="{% url 'criar_transacao_parcelada' %}" class="btn-parcelada"><i class="fa-solid fa-divide"></i></a>
                 <a href="{% url 'criar_transacao_transferencia' %}" class="btn"><i class="fa-solid fa-rotate"></i></a>
+                <a href="{% url 'listar_transacoes_modelo' %}" class="btn"><i class="fa-solid fa-clone"></i></a>
             </div>
             <form action="#" method="GET">
                 <input type="text" id="search" name="search" placeholder="Pesquisar..." value="{{request.GET.search}}" class="search-bar">

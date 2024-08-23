@@ -112,6 +112,59 @@ class TransacaoForm(forms.ModelForm):
             raise forms.ValidationError('O valor da transação deve ser maior que zero.')
 
         return valor
+
+class TransacaoModeloForm(forms.ModelForm):
+    """Formulário para transações modelo."""
+    
+
+    class Meta:
+        model = Transacao
+        fields = [
+            'descricao',
+            'valor',
+            'tipo',
+            'conta',
+            'categoria',
+            'subcategoria',
+        ]
+        exclude = ['id', 'usuario', 'conta_destino', 'data',]
+        labels = {
+            'descricao': 'Descrição',
+            'valor': 'Valor',
+            'tipo': 'Tipo',
+            'conta': 'Conta',
+            'categoria': 'Categoria',
+            'subcategoria': 'Subcategoria',
+        }
+        widgets = {
+            'descricao': forms.TextInput(attrs={'class': 'form-control'}),
+            'valor': forms.NumberInput(attrs={'class': 'form-control'}),
+            'tipo': forms.Select(attrs={'class': 'form-control'}, choices=[('R', 'Receita'), ('D', 'Despesa'),]),
+            'conta': forms.Select(attrs={'class': 'form-control'},),
+            'categoria': forms.Select(attrs={'class': 'form-control', 'id': 'field-categoria'}),
+            'subcategoria': forms.Select(attrs={'class': 'form-control', 'id': 'field-subcategoria'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if user:
+            self.fields['conta'].queryset = Conta.objects.filter(usuario=user)
+            self.fields['categoria'].queryset = Categoria.objects.filter(usuario=user)
+            self.fields['subcategoria'].queryset = Subcategoria.objects.filter(usuario=user)
+        
+
+    def clean_valor(self):
+        """
+        Valida o campo 'valor'.
+        """
+        valor = self.cleaned_data['valor']
+
+        if valor <= 0:
+            raise forms.ValidationError('O valor da transação deve ser maior que zero.')
+
+        return valor
     
 class TransferenciaForm(forms.ModelForm):
     """Formulário para transferencias."""

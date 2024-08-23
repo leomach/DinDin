@@ -11,6 +11,11 @@ from django.core.paginator import Paginator
 import csv
 from django.http import HttpResponse
 
+# Data
+dia = datetime.now().day
+mes = datetime.now().month
+ano = datetime.now().year
+
 def get_lista1_lista2(lista1, lista2):
     # Combina as listas e ordena por data
     lista1_lista2 = sorted(list(lista1) + list(lista2), key=lambda obj: obj.data)
@@ -30,10 +35,6 @@ def index(request):
     categorias_receitas = categorias.filter(tipo=1)
     subcategorias = Subcategoria.objects.filter(usuario=usuario)
     
-    # Data
-    dia = datetime.now().day
-    mes = datetime.now().month
-    ano = datetime.now().year
 
     # Transações do mês anterior
     if mes == 1:
@@ -192,7 +193,7 @@ def graficos_anuais(request):
     # Cria o objeto HttpResponse com o cabeçalho CSV apropriado.
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=relatorio-anual.csv'
-    transacoes = Transacao.objects.all().order_by('-data')
+    transacoes = Transacao.objects.filter(data__year=ano).filter(data__month=mes).order_by('-data')
 
     writer = csv.writer(response)
     writer.writerow(['Descrição', 'Valor', 'Tipo', 'Data', 'Usuário'])
