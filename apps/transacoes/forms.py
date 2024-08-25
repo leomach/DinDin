@@ -83,7 +83,7 @@ class TransacaoForm(forms.ModelForm):
             'subcategoria': 'Subcategoria',
         }
         widgets = {
-            'data': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'data': forms.DateInput(attrs={'class': 'form-control',  'type': 'datetime-local'}),
             'descricao': forms.TextInput(attrs={'class': 'form-control'}),
             'valor': forms.NumberInput(attrs={'class': 'form-control'}),
             'tipo': forms.Select(attrs={'class': 'form-control'}, choices=[('R', 'Receita'), ('D', 'Despesa'),]),

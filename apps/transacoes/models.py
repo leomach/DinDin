@@ -104,7 +104,7 @@ class TransacaoModelo(models.Model):
         
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     conta = models.ForeignKey(Conta, on_delete=models.CASCADE, verbose_name="conta_transacao_modelo", related_name="conta_transacao_modelo")
-    data = models.DateField(default=datetime.date.today)
+    data = models.DateTimeField(default=datetime.date.today)
     descricao = models.CharField(max_length=255)
     valor = models.DecimalField(max_digits=10, decimal_places=2)
     tipo = models.CharField(max_length=1, null=False, blank=False, default='D')

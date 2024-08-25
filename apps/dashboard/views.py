@@ -83,34 +83,35 @@ def index(request):
             total_anual = receitas_anual + receitas_parcelas_anual
             c_receitas_anual.append({'nome': categoria.nome, 'total': total_anual})
 
-            contexto = {
-                'usuario': usuario,
-                'contas': contas,
-                'transacoes': transacoes,
-                'categorias': categorias,
-                'subcategorias': subcategorias,
+        contexto = {
+            'usuario': usuario,
+            'contas': contas,
+            'transacoes': transacoes,
+            'categorias': categorias,
+            'subcategorias': subcategorias,
 
-                'data': {
-                    'dia': dia,
-                    'mes': mes,
-                    'ano': ano,
-                },
-                'saldo_total_contas': saldo_total_contas,
+            'data': {
+                'dia': dia,
+                'mes': mes,
+                'ano': ano,
+            },
+            'saldo_total_contas': saldo_total_contas,
 
-                'economia_anual':economia_anual,
+            'economia_anual':economia_anual,
 
-                
-                'c_despesas_anual': sorted(c_despesas_anual, key=lambda x: x['total'], reverse=True),
-                'c_receitas_anual': sorted(c_receitas_anual, key=lambda x: x['total'], reverse=True),
+            
+            'c_despesas_anual': sorted(c_despesas_anual, key=lambda x: x['total'], reverse=True),
+            'c_receitas_anual': sorted(c_receitas_anual, key=lambda x: x['total'], reverse=True),
 
-                'saldo_ano_atual': saldo_ano_atual,
-                'transacoes_receitas_ano_atual': transacoes_receitas_ano_atual,
-                'despesas_ano_atual': despesas_ano_atual,
+            'saldo_ano_atual': saldo_ano_atual,
+            'transacoes_receitas_ano_atual': transacoes_receitas_ano_atual,
+            'despesas_ano_atual': despesas_ano_atual,
 
-                'receitas_ano_anterior': receitas_ano_anterior,
-                'despesas_ano_anterior': despesas_ano_anterior,
-                'saldo_ano_anterior': saldo_ano_anterior,
-            }
+            'receitas_ano_anterior': receitas_ano_anterior,
+            'despesas_ano_anterior': despesas_ano_anterior,
+            'saldo_ano_anterior': saldo_ano_anterior,
+        }
+        return render(request, "dashboard/index.html", contexto)
     else:
         transacoes_mes_atual = transacoes.filter(data__year=ano).filter(data__month=mes)
         parcelas_mes_atual = parcelas.filter(data__year=ano).filter(data__month=mes)
@@ -157,36 +158,36 @@ def index(request):
             total = receitas + receitas_parcelas
             c_receitas.append({'nome': categoria.nome, 'total': total})
 
-            contexto = {
-                'page': page_mes,
-                'economia':economia,
+        contexto = {
+            'page': page_mes,
+            'economia':economia,
 
-                'c_despesas': sorted(c_despesas, key=lambda x: x['total'], reverse=True),
-                'c_receitas': sorted(c_receitas, key=lambda x: x['total'], reverse=True),
-                'saldo_mes_atual': saldo_mes_atual,
-                'transacoes_receitas_mes_atual': transacoes_receitas_mes_atual,
-                'despesas_mes_atual': despesas_mes_atual,
-                'transacoes_receitas_mes_anterior': transacoes_receitas_mes_anterior,
-                'transacoes_despesas_mes_anterior': transacoes_despesas_mes_anterior,
-                'saldo_mes_anterior': saldo_mes_anterior,
-                'despesas_mes_anterior': despesas_mes_anterior,
-                'transacoes_mes_atual': transacoes_mes_atual,
+            'c_despesas': sorted(c_despesas, key=lambda x: x['total'], reverse=True),
+            'c_receitas': sorted(c_receitas, key=lambda x: x['total'], reverse=True),
+            'saldo_mes_atual': saldo_mes_atual,
+            'transacoes_receitas_mes_atual': transacoes_receitas_mes_atual,
+            'despesas_mes_atual': despesas_mes_atual,
+            'transacoes_receitas_mes_anterior': transacoes_receitas_mes_anterior,
+            'transacoes_despesas_mes_anterior': transacoes_despesas_mes_anterior,
+            'saldo_mes_anterior': saldo_mes_anterior,
+            'despesas_mes_anterior': despesas_mes_anterior,
+            'transacoes_mes_atual': transacoes_mes_atual,
 
-                'usuario': usuario,
-                'contas': contas,
-                'transacoes': transacoes,
-                'categorias': categorias,
-                'subcategorias': subcategorias,
+            'usuario': usuario,
+            'contas': contas,
+            'transacoes': transacoes,
+            'categorias': categorias,
+            'subcategorias': subcategorias,
 
-                'data': {
-                    'dia': dia,
-                    'mes': mes,
-                    'ano': ano,
-                },
-                'saldo_total_contas': saldo_total_contas,
-            }
+            'data': {
+                'dia': dia,
+                'mes': mes,
+                'ano': ano,
+            },
+            'saldo_total_contas': saldo_total_contas,
+        }
     
-    return render(request, "dashboard/index.html", contexto)
+        return render(request, "dashboard/index.html", contexto)
 
 @login_required
 def graficos_anuais(request):
