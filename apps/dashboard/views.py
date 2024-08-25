@@ -188,19 +188,73 @@ def index(request):
         }
     
         return render(request, "dashboard/index.html", contexto)
+    
+@login_required
+def relatorios(request):
+    contexto = {}
+    return render(request, "dashboard/relatorios.html", contexto)
 
 @login_required
-def graficos_anuais(request):
+def relatorio_mes(request):
     # Cria o objeto HttpResponse com o cabeçalho CSV apropriado.
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=relatorio-anual.csv'
+    response['Content-Disposition'] = f'attachment; filename=relatorio-mes-{mes}.csv'
     transacoes = Transacao.objects.filter(data__year=ano).filter(data__month=mes).order_by('-data')
 
     writer = csv.writer(response)
-    writer.writerow(['Descrição', 'Valor', 'Tipo', 'Data', 'Usuário'])
+    writer.writerow(['Descrição', 'Valor', 'Tipo', 'Data', 'Turno'])
     for t in transacoes:
-        writer.writerow([f'{t.descricao}', f'{t.valor}', f'{t.tipo}', f'{t.data}', f'{t.usuario.username}'])
+        # Extrai a hora da transação
+        hora = t.data.hour
+
+        # Determina o turno com base na hora
+        if 4 <= hora < 12:
+            turno = 'Manhã'
+        elif 12 <= hora < 18:
+            turno = 'Tarde'
+        else:
+            turno = 'Noite'
+
+        # Escreve a linha no CSV com o turno calculado
+        writer.writerow([f'{t.descricao}', f'{t.valor}', f'{t.tipo}', f'{t.data}', f'{turno}'])
 
     return response
     # contexto = {}
     # return render(request, "dashboard/graficos_anual.html", contexto)
+
+@login_required
+def relatorio_dia(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename=relatorio-dia-{dia}{mes}{ano}.csv'
+    transacoes = Transacao.objects.filter(data__year=ano).filter(data__month=mes).filter(data__day=dia).order_by('-data')
+    manha = 0
+    tarde = 0
+    noite = 0
+
+    writer = csv.writer(response)
+    writer.writerow(['Descrição', 'Valor', 'Tipo', 'Data', 'Turno'])
+    for t in transacoes:
+        # Extrai a hora da transação
+        hora = t.data.hour
+
+        # Determina o turno com base na hora
+        if 4 <= hora < 12:
+            turno = 'Manhã'
+            manha = manha + 1
+        elif 12 <= hora < 18:
+            turno = 'Tarde'
+            tarde = tarde + 1
+        else:
+            turno = 'Noite'
+            noite = noite + 1
+
+        # Escreve a linha no CSV com o turno calculado
+        writer.writerow([f'{t.descricao}', f'{t.valor}', f'{t.tipo}', f'{t.data}', f'{turno}'])
+
+    writer.writerow(['', '', '', '', ''])
+    writer.writerow(['Total de Transações:', len(transacoes), '', '', ''])
+    writer.writerow(['Total de transacoes pela manhã:', manha, '', '', ''])
+    writer.writerow(['Total de transacoes pela tarde:', tarde, '', '', ''])
+    writer.writerow(['Total de transacoes pela noite:', noite, '', '', ''])
+
+    return response
