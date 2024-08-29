@@ -2,6 +2,7 @@ import datetime
 from django.utils.timezone import make_aware, is_naive
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from .models import Transacao, TransacaoParcelada, Parcela, TransacaoModelo
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Sum
@@ -35,7 +36,12 @@ def listar_transacoes(request):
     # Verifica se tem GET para search e filtra as transações
     if request.GET.get('search'):
         search = request.GET.get('search')
-        transacoes = transacoes.filter(descricao__icontains=search)
+        transacoes = transacoes.filter(
+            Q(descricao__icontains=search) |
+            Q(categoria__nome__icontains=search) |
+            Q(subcategoria__nome__icontains=search) |
+            Q(conta__nome__icontains=search)
+            )
         transacoes_parceladas = transacoes_parceladas.filter(descricao__icontains=search)
 
     def get_transacoes_e_parceladas(transacoes, transacoes_parceladas):
@@ -389,12 +395,17 @@ def editar_transacao(request, transacao_pk):
 
                 # Atualiza o saldo da conta de acordo com o novo valor e tipo da transacao
                 if tipo == 'D':
-                    valor_da_conta = conta.saldo_atual + saldo_antigo - valor
+                    valor_da_conta_atual = transacao.conta.saldo_atual + saldo_antigo
+                    transacao.conta.saldo_atual = valor_da_conta_atual
+                    valor_da_conta = conta.saldo_atual - valor
                     conta.saldo_atual = valor_da_conta
                 else:
-                    valor_da_conta = conta.saldo_atual - saldo_antigo + valor
+                    valor_da_conta_atual = transacao.conta.saldo_atual - saldo_antigo
+                    transacao.conta.saldo_atual = valor_da_conta_atual
+                    valor_da_conta = conta.saldo_atual + valor
                     conta.saldo_atual = valor_da_conta
 
+                transacao.conta.save()
                 conta.save()
 
                 # Atualiza os dados da transacao
