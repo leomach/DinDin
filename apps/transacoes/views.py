@@ -1,4 +1,5 @@
 import datetime
+from django.utils.timezone import make_aware, is_naive
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from .models import Transacao, TransacaoParcelada, Parcela, TransacaoModelo
 from django.contrib.auth.decorators import login_required
@@ -11,6 +12,14 @@ from .forms import TransacaoForm, TransacaoParceladaForm, ParcelaForm, Transfere
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from dateutil.relativedelta import *
+
+# Função auxiliar para converter qualquer data para datetime
+def to_datetime(value):
+    if isinstance(value, datetime.date) and not isinstance(value, datetime.datetime):
+        value = datetime.datetime.combine(value, datetime.datetime.min.time())
+    if is_naive(value):
+        value = make_aware(value)
+    return value
 
 def listar_transacoes(request):
     """
@@ -30,12 +39,18 @@ def listar_transacoes(request):
         transacoes_parceladas = transacoes_parceladas.filter(descricao__icontains=search)
 
     def get_transacoes_e_parceladas(transacoes, transacoes_parceladas):
-        # Combina as listas e ordena por data
-        transacoes_e_parceladas = sorted(list(transacoes) + list(transacoes_parceladas), key=lambda obj: obj.data)
+        transacoes_e_parceladas = sorted(
+            list(transacoes) + list(transacoes_parceladas),
+            key=lambda obj: datetime.datetime.combine(obj.data, datetime.datetime.min.time()) if isinstance(obj.data, datetime.date) else obj.data
+        )
         return transacoes_e_parceladas
     
     transacoes_e_parceladas = get_transacoes_e_parceladas(transacoes=transacoes, transacoes_parceladas=transacoes_parceladas)
-    transacoes_e_parceladas.sort(key=lambda x: x.data, reverse=True)
+    transacoes_e_parceladas = sorted(
+        list(transacoes) + list(transacoes_parceladas),
+        key=lambda obj: to_datetime(obj.data),
+        reverse=True
+    )
 
     # Calcula o saldo total das contas
     saldo_total_contas = Conta.objects.filter(usuario=usuario).aggregate(saldo_total=Sum('saldo_atual'))['saldo_total'] or 0

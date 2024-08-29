@@ -1,3 +1,4 @@
+import datetime
 from django import forms
 from .models import Transacao, TransacaoParcelada, Parcela
 from ..conta.models import Conta
@@ -83,7 +84,7 @@ class TransacaoForm(forms.ModelForm):
             'subcategoria': 'Subcategoria',
         }
         widgets = {
-            'data': forms.DateInput(attrs={'class': 'form-control',  'type': 'datetime-local'}),
+            'data': forms.DateTimeInput(attrs={'class': 'form-control',  'type': 'datetime-local'}),
             'descricao': forms.TextInput(attrs={'class': 'form-control'}),
             'valor': forms.NumberInput(attrs={'class': 'form-control'}),
             'tipo': forms.Select(attrs={'class': 'form-control'}, choices=[('R', 'Receita'), ('D', 'Despesa'),]),

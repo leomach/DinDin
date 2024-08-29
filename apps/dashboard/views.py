@@ -6,7 +6,9 @@ from..categorias.models import Categoria
 from..subcategorias.models import Subcategoria
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
-from datetime import datetime
+from datetime import datetime, date
+from django.utils.timezone import make_aware, is_naive
+from django.utils import timezone
 from django.core.paginator import Paginator
 import csv
 from django.http import HttpResponse
@@ -18,8 +20,18 @@ ano = datetime.now().year
 
 def get_lista1_lista2(lista1, lista2):
     # Combina as listas e ordena por data
-    lista1_lista2 = sorted(list(lista1) + list(lista2), key=lambda obj: obj.data)
+    lista1_lista2 = sorted(
+            list(lista1) + list(lista2),
+            key=lambda obj: datetime.combine(obj.data, datetime.min.time()) if isinstance(obj.data, date) else obj.data
+        )
     return lista1_lista2
+
+def to_datetime(value):
+    if isinstance(value, date) and not isinstance(value, datetime):
+        value = datetime.combine(value, datetime.min.time())
+    if is_naive(value):
+        value = make_aware(value)
+    return value
 
 def index(request):
     usuario = request.user
@@ -127,7 +139,6 @@ def index(request):
     
         transacoes_mes_anterior = transacoes.filter(data__year=ano).filter(data__month=mes_anterior)
         parcelas_mes_anterior = parcelas.filter(data__year=ano).filter(data__month=mes_anterior)
-        transacoes_e_parcelas_mes_anterior = get_lista1_lista2(lista1=transacoes_mes_anterior, lista2=parcelas_mes_anterior)
 
         transacoes_receitas_mes_anterior = transacoes_mes_anterior.filter(tipo='R').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
         transacoes_despesas_mes_anterior = transacoes_mes_anterior.filter(tipo='D').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
@@ -138,7 +149,11 @@ def index(request):
 
         economia = saldo_mes_anterior + saldo_mes_atual
 
-        transacoes_e_parcelas_mes_atual.sort(key=lambda x: x.data, reverse=True)
+        transacoes_e_parcelas_mes_atual = sorted(
+                list(transacoes_mes_atual) + list(parcelas_mes_atual),
+                key=lambda obj: datetime.combine(obj.data, datetime.min.time()) if isinstance(obj.data, date) else obj.data,
+                reverse=True
+            )
 
         # Faz a paginação das transações
         transacoes_paginator = Paginator(transacoes_e_parcelas_mes_atual, 10)
@@ -200,23 +215,63 @@ def relatorio_mes(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename=relatorio-mes-{mes}.csv'
     transacoes = Transacao.objects.filter(data__year=ano).filter(data__month=mes).order_by('-data')
+    transacoes_receitas_mes_atual = transacoes.filter(tipo='R').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
+    total_transacoes_despesas_mes_atual = transacoes.filter(tipo='D').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
+    economia = transacoes_receitas_mes_atual - total_transacoes_despesas_mes_atual
+    manha = 0
+    tarde = 0
+    noite = 0
+    doacoes = 0
+    produtos = {}
 
     writer = csv.writer(response)
     writer.writerow(['Descrição', 'Valor', 'Tipo', 'Data', 'Turno'])
+
     for t in transacoes:
+        # Converte a data para o fuso horário local
+        data_local = t.data.astimezone(timezone.get_current_timezone())
+        
+        # Formata a data no formato desejado
+        data_formatada = data_local.strftime('%d/%m/%Y %H:%M:%S')
+
         # Extrai a hora da transação
         hora = t.data.hour
 
         # Determina o turno com base na hora
         if 4 <= hora < 12:
             turno = 'Manhã'
+            manha += 1
         elif 12 <= hora < 18:
             turno = 'Tarde'
+            tarde += 1
         else:
             turno = 'Noite'
+            noite += 1
+
+        if t.tipo == 'D' and t.valor == 0:
+            doacoes += 1
+
+        if t.descricao in produtos:
+            produtos[t.descricao] += 1
+        else:
+            produtos[t.descricao] = 1
 
         # Escreve a linha no CSV com o turno calculado
-        writer.writerow([f'{t.descricao}', f'{t.valor}', f'{t.tipo}', f'{t.data}', f'{turno}'])
+        writer.writerow([f'{t.descricao}', f'{t.valor}', f'{t.tipo}', f'{data_formatada}', f'{turno}'])
+
+    writer.writerow(['', '', '', '', ''])
+    writer.writerow(['Total de Transações:', len(transacoes), '', '', ''])
+    writer.writerow(['Total de transacoes pela manhã:', manha, '', '', ''])
+    writer.writerow(['Total de transacoes pela tarde:', tarde, '', '', ''])
+    writer.writerow(['Total de transacoes pela noite:', noite, '', '', ''])
+    writer.writerow(['Total de receitas:', transacoes_receitas_mes_atual, '', '', ''])
+    writer.writerow(['Total de despesas:', total_transacoes_despesas_mes_atual, '', '', ''])
+    writer.writerow(['Total de doações:', doacoes, '', '', ''])
+    writer.writerow(['Economia (receitas - despesas):', economia, '', '', ''])
+    writer.writerow(['', '', '', '', ''])
+
+    for p in produtos:
+        writer.writerow([f'Quantidade de {p}:', produtos[p], '', '', ''])
 
     return response
     # contexto = {}
@@ -233,23 +288,30 @@ def relatorio_dia(request):
 
     writer = csv.writer(response)
     writer.writerow(['Descrição', 'Valor', 'Tipo', 'Data', 'Turno'])
+
     for t in transacoes:
+        # Converte a data para o fuso horário local
+        data_local = t.data.astimezone(timezone.get_current_timezone())
+        
+        # Formata a data no formato desejado
+        data_formatada = data_local.strftime('%d/%m/%Y %H:%M:%S')
+
         # Extrai a hora da transação
-        hora = t.data.hour
+        hora = data_local.hour
 
         # Determina o turno com base na hora
         if 4 <= hora < 12:
             turno = 'Manhã'
-            manha = manha + 1
+            manha += 1
         elif 12 <= hora < 18:
             turno = 'Tarde'
-            tarde = tarde + 1
+            tarde += 1
         else:
             turno = 'Noite'
-            noite = noite + 1
+            noite += 1
 
         # Escreve a linha no CSV com o turno calculado
-        writer.writerow([f'{t.descricao}', f'{t.valor}', f'{t.tipo}', f'{t.data}', f'{turno}'])
+        writer.writerow([f'{t.descricao}', f'{t.valor}', f'{t.tipo}', f'{data_formatada}', f'{turno}'])
 
     writer.writerow(['', '', '', '', ''])
     writer.writerow(['Total de Transações:', len(transacoes), '', '', ''])
