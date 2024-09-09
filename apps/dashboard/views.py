@@ -214,7 +214,7 @@ def relatorio_mes(request):
     # Cria o objeto HttpResponse com o cabeçalho CSV apropriado.
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename=relatorio-mes-{mes}.csv'
-    transacoes = Transacao.objects.filter(data__year=ano).filter(data__month=mes).order_by('-data')
+    transacoes = Transacao.objects.filter(usuario=request.user).filter(data__year=ano).filter(data__month=mes).order_by('-data')
     transacoes_receitas_mes_atual = transacoes.filter(tipo='R').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
     total_transacoes_despesas_mes_atual = transacoes.filter(tipo='D').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
     economia = transacoes_receitas_mes_atual - total_transacoes_despesas_mes_atual
@@ -281,7 +281,7 @@ def relatorio_mes(request):
 def relatorio_dia(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename=relatorio-dia-{dia}{mes}{ano}.csv'
-    transacoes = Transacao.objects.filter(data__year=ano).filter(data__month=mes).filter(data__day=dia).order_by('-data')
+    transacoes = Transacao.objects.filter(usuario=request.user).filter(data__year=ano).filter(data__month=mes).filter(data__day=dia).order_by('-data')
     manha = 0
     tarde = 0
     noite = 0
@@ -318,5 +318,32 @@ def relatorio_dia(request):
     writer.writerow(['Total de transacoes pela manhã:', manha, '', '', ''])
     writer.writerow(['Total de transacoes pela tarde:', tarde, '', '', ''])
     writer.writerow(['Total de transacoes pela noite:', noite, '', '', ''])
+
+    return response
+
+@login_required
+def relatorio_vencedor(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename=relatorio-vencedor-{ano}.csv'
+    transacoes = Transacao.objects.filter(usuario=request.user).filter(data__year=ano).order_by('cliente')
+    clientes = {}
+
+    writer = csv.writer(response)
+    writer.writerow(['Nome', 'Valor'])
+
+    for t in transacoes:
+        if t.cliente == None or t.cliente == '':
+            print(f'Cliente none visto')
+        elif t.cliente in clientes and t.cliente != None or t.cliente != '':
+            clientes[t.cliente] += t.valor
+        else:
+            clientes[t.cliente] = t.valor
+
+    clientes_vencedor = sorted(clientes, reverse=True)
+
+    for c in clientes_vencedor:
+        writer.writerow([f'{c}', f'{clientes[c]}'])
+
+    writer.writerow(['', ''])
 
     return response

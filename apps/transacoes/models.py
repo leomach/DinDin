@@ -68,6 +68,7 @@ class Transacao(models.Model):
     categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True)
     subcategoria = models.ForeignKey(Subcategoria, on_delete=models.SET_NULL, null=True, blank=True)
     conta_destino = models.ForeignKey(Conta, on_delete=models.CASCADE, null=True, blank=True, default=None, verbose_name="conta_destino", related_name="conta_destino")
+    cliente = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f'{self.descricao} - R${self.valor:.2f}'

@@ -11,24 +11,28 @@
         <table class="table">
             <thead>
                 <tr>
-                  <th scope="col">#</th>
+                  <th class="d-none d-md-table-cell" scope="col">#</th>
                   <th scope="col">Descrição</th>
                   <th scope="col">Valor</th>
-                  <th scope="col">Conta</th>
+                  <th class="d-none d-md-table-cell" scope="col">Tipo</th>
+                  <th class="d-none d-md-table-cell" scope="col">Categoria</th>
+                  <th class="d-none d-md-table-cell" scope="col">Conta</th>
                   <th scope="col">Ações</th>
                 </tr>
               </thead>
               <tbody>
                 {% for transacao in transacoes %}
                 <tr>
-                  <th scope="row">{{transacao.id}}</th>
+                  <th class="d-none d-md-table-cell" scope="row">{{transacao.id}}</th>
                   <td>{{transacao.descricao}}</td>
                   <td>{{transacao.valor}}</td>
-                  <td>{{transacao.conta}}</td>
+                  <td class="d-none d-md-table-cell">{{transacao.tipo}}</td>
+                  <td class="d-none d-md-table-cell">{{transacao.categoria}}</td>
+                  <td class="d-none d-md-table-cell">{{transacao.conta}}</td>
                   <td>
                     <button data-bs-toggle="modal" data-bs-target="#efetuarModel{{transacao.id}}" type="button" class="btn btn-info btn-sm"><i class="fa-solid fa-clone"></i></button>
-                    <a class="btn btn-warning btn-sm" href="{% url 'editar_transacao_modelo' transacao.id %}">#</a>
-                    <a class="btn btn-danger btn-sm" href="{% url 'excluir_transacao_modelo' transacao.id %}">X</a>
+                    <a class="btn btn-warning btn-sm d-none d-md-inline-block" href="{% url 'editar_transacao_modelo' transacao.id %}">#</a>
+                    <a class="btn btn-danger btn-sm d-none d-md-inline-block" href="{% url 'excluir_transacao_modelo' transacao.id %}">X</a>
                   </td>
                   <div class="modal fade" data-bs-backdrop="false" id="efetuarModel{{transacao.id}}" tabindex="-1" aria-labelledby="efetuarModel{{transacao.id}}Label" aria-hidden="true">
                       <div class="modal-dialog">
@@ -49,6 +53,10 @@
                               <div class="mb-3">
                                   <label for="quantidade" class="form-label">Quantidade</label>
                                   <input type="number" class="form-control" id="quantidade" name="quantidade">
+                              </div>
+                              <div class="mb-3">
+                                  <label for="cliente" class="form-label"><strong>Primeiro e último</strong> nome do cliente:</label>
+                                  <input type="text" class="form-control" id="cliente" name="cliente">
                               </div>
                               <button type="submit" class="btn btn-primary">Efetuar</button>
                             </form>

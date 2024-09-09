@@ -13,6 +13,7 @@ from .forms import TransacaoForm, TransacaoParceladaForm, ParcelaForm, Transfere
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from dateutil.relativedelta import *
+from django.template.defaultfilters import slugify
 
 # Função auxiliar para converter qualquer data para datetime
 def to_datetime(value):
@@ -681,14 +682,14 @@ def editar_transacao_modelo(request, transacao_pk):
             transacao_modelo.save()
 
             messages.success(request, 'Modelo de transacao editado com sucesso!')
-            return redirect('criar_transacao_modelo')
+            return redirect('listar_transacoes_modelo')
         else:
             messages.error(request, 'Erro: Formulário inválido')
             return redirect('editar_transacao_modelo', transacao_pk=transacao_pk)
     else:
         form = TransacaoModeloForm(instance=transacao_modelo, user=request.user)
 
-    return render(request, 'transacoes/editar_transacao_modelo.html', {'form': form})
+    return render(request, 'transacoes/editar_transacao_modelo.html', {'form': form, 'transacao': transacao_modelo})
 
 @login_required
 def efetuar_transacao_modelo(request, transacao_pk):
@@ -707,6 +708,8 @@ def efetuar_transacao_modelo(request, transacao_pk):
         categoria = transacao_modelo.categoria
         subcategoria = transacao_modelo.subcategoria
         quantidade = request.POST['quantidade']
+        cliente = request.POST['cliente']
+        cliente_slug = slugify(cliente)
 
         for t in range(int(quantidade)):
             Transacao.objects.create(
@@ -718,6 +721,7 @@ def efetuar_transacao_modelo(request, transacao_pk):
                 tipo=tipo,
                 categoria=categoria,
                 subcategoria=subcategoria,
+                cliente=cliente_slug,
             )
         
         messages.success(request, 'Transações criadas com sucesso!')

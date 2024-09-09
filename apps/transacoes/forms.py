@@ -73,7 +73,7 @@ class TransacaoForm(forms.ModelForm):
             'categoria',
             'subcategoria',
         ]
-        exclude = ['id', 'usuario', 'conta_destino']
+        exclude = ['id', 'usuario', 'conta_destino', 'cliente']
         labels = {
             'data': 'Data',
             'descricao': 'Descrição',
