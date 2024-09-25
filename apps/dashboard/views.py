@@ -1,3 +1,5 @@
+from random import randint
+import random
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from ..transacoes.models import Transacao, TransacaoParcelada, Parcela
@@ -323,26 +325,40 @@ def relatorio_dia(request):
 
 @login_required
 def relatorio_vencedor(request):
+    # Configuração inicial do relatório CSV
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename=relatorio-vencedor-{ano}.csv'
-    transacoes = Transacao.objects.filter(usuario=request.user).filter(data__year=ano).order_by('cliente')
+
+    # Filtrar transações do usuário e do ano especificado
+    transacoes = Transacao.objects.filter(usuario=request.user, data__year=ano).order_by('cliente')
     clientes = {}
 
+    # Preparar o writer para escrever no CSV
     writer = csv.writer(response)
     writer.writerow(['Nome', 'Valor'])
 
+    # Processar as transações e acumular o valor por cliente
     for t in transacoes:
-        if t.cliente == None or t.cliente == '':
-            print(f'Cliente none visto')
-        elif t.cliente in clientes and t.cliente != None or t.cliente != '':
-            clientes[t.cliente] += t.valor
-        else:
-            clientes[t.cliente] = t.valor
+        if t.cliente:  # Ignorar transações sem cliente
+            if t.cliente in clientes:
+                clientes[t.cliente] += t.valor
+            else:
+                clientes[t.cliente] = t.valor
 
-    clientes_vencedor = sorted(clientes, reverse=True)
+    # Selecionar um ganhador aleatório entre os clientes
+    if clientes:
+        rand_winner = random.choice(list(clientes.keys()))
+        writer.writerow(['Ganhador:', rand_winner])
+        writer.writerow(['Valor:', f'{clientes[rand_winner]:.2f}'])
+    else:
+        writer.writerow(['Ganhador:', 'Nenhum cliente disponível'])
 
-    for c in clientes_vencedor:
-        writer.writerow([f'{c}', f'{clientes[c]}'])
+    # Inserir uma linha em branco
+    writer.writerow(['', ''])
+
+    # Escrever o relatório com todos os clientes e seus valores acumulados
+    for cliente, valor in clientes.items():
+        writer.writerow([cliente, f'{valor:.2f}'])
 
     writer.writerow(['', ''])
 
