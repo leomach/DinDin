@@ -38,7 +38,11 @@
                 </div>
                 <div class="info-principal">
                     <h4>Economia</h4>
+                    {% if saldo_mes_atual < 0 %}
+                    <p style="color: red;">R${{saldo_mes_atual}}</p>
+                    {% else %}
                     <p>R${{saldo_mes_atual}}</p>
+                    {% endif %}
                 </div>
                 <div class="info">
                     <h4>Anual</h4>
