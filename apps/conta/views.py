@@ -35,6 +35,7 @@ def criar_conta(request):
                 nome=nome,
                 descricao=descricao,
                 saldo_atual=saldo_inicial,
+                saldo_inicial=saldo_inicial,
                 limite=limite,
                 limite_atual=limite
             )
@@ -59,6 +60,7 @@ def editar_conta(request, conta_id):
             nome = form.cleaned_data['nome']
             descricao = form.cleaned_data['descricao']
             saldo_inicial = form.cleaned_data['saldo_inicial']
+            saldo_atual = conta.saldo_atual
             limite = form.cleaned_data['limite']
 
             try:
@@ -69,6 +71,10 @@ def editar_conta(request, conta_id):
 
             conta.nome = nome
             conta.descricao = descricao
+            
+            saldo_atual_novo = saldo_atual - conta.saldo_inicial + saldo_inicial
+            conta.saldo_atual = saldo_atual_novo
+
             conta.saldo_inicial = saldo_inicial
             conta.limite = limite
             conta.save()

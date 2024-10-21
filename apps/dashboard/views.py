@@ -60,6 +60,11 @@ def index(request):
 
 
     saldo_total_contas = contas.aggregate(saldo_total=Sum('saldo_atual'))['saldo_total'] or 0
+    saldo_inicial_total_contas = contas.aggregate(saldo_total=Sum('saldo_inicial'))['saldo_total'] or 0
+    transacoes_receita = transacoes.filter(tipo = 'R').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
+    transacoes_despesas = transacoes.filter(tipo = 'D').aggregate(saldo_total=Sum('valor'))['saldo_total'] or 0
+    total_parcelas = parcelas.aggregate(saldo_total=Sum('valor_parcela'))['saldo_total'] or 0
+    liquido_total = transacoes_receita + saldo_inicial_total_contas - transacoes_despesas - total_parcelas
 
 
     if request.GET.get('time') == 'ano':
@@ -178,6 +183,7 @@ def index(request):
         contexto = {
             'page': page_mes,
             'economia':economia,
+            'liquido_total': liquido_total,
 
             'c_despesas': sorted(c_despesas, key=lambda x: x['total'], reverse=True),
             'c_receitas': sorted(c_receitas, key=lambda x: x['total'], reverse=True),
@@ -363,3 +369,60 @@ def relatorio_vencedor(request):
     writer.writerow(['', ''])
 
     return response
+
+@login_required
+def relatorio_liquido(request):
+    """
+    Calcula o saldo líquido a partir de todas as transações e parcelas, e compara com o saldo atual das contas do usuário
+
+    request: Objeto de requisição
+    response = HttpResponse(content_type='text/csv')
+    """
+
+    # Configuração inicial do relatório CSV
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename=relatorio-liquido-total.csv'
+
+    # A soma de todas as transações de receitas
+    total_receitas = Transacao.objects.filter(usuario=request.user, tipo='R').aggregate(total=Sum('valor'))['total'] or 0
+
+    # A soma de todas as transações de despesas
+    total_despesas = Transacao.objects.filter(usuario=request.user, tipo='D').aggregate(total=Sum('valor'))['total'] or 0
+
+    # A soma de todas as parcelas
+    total_parceladas = TransacaoParcelada.objects.filter(usuario=request.user).aggregate(total=Sum('valor_total'))['total'] or 0
+
+    # Objetos de contas do usuário
+    contas = Conta.objects.filter(usuario=request.user)
+
+    # Soma de saldos iniciais das contas do usuário
+    saldo_inicial = sum(c.saldo_inicial for c in contas)
+
+    # Soma de saldos atuais do usuário
+    saldo_atual = sum(c.saldo_atual for c in contas)
+
+    # Calcula o saldo líquido juntando transações e parcelas
+    saldo_liquido_transacoes_parcelas = saldo_inicial + total_receitas - total_despesas - total_parceladas
+
+    # Calcula a diferença entre o saldo liquido e o saldo_atual
+    saldo_diferenca = saldo_liquido_transacoes_parcelas - saldo_atual
+
+    # Preparar o writer para escrever no CSV
+    writer = csv.writer(response)
+    if saldo_diferenca == 0:
+        writer.writerow(['Parabéns!', 'Está tudo correto.'])
+    else:
+        writer.writerow(['Atenção!', 'Há uma incroguencia.'])
+
+    writer.writerow(['Saldo Líquido (Transações + Parcelas)', saldo_liquido_transacoes_parcelas])
+    writer.writerow(['Saldo Atual em Conta', saldo_atual])
+    writer.writerow(['Diferença', saldo_diferenca])
+    writer.writerow(['', ''])
+
+    writer.writerow(['Contas:', ''])
+    for c in contas:
+        writer.writerow([c.nome, f'{c.saldo_atual:.2f}'])
+    writer.writerow(['', ''])
+    return response
+
+    
