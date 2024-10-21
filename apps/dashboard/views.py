@@ -396,10 +396,10 @@ def relatorio_liquido(request):
     contas = Conta.objects.filter(usuario=request.user)
 
     # Soma de saldos iniciais das contas do usuário
-    saldo_inicial = sum(c.saldo_inicial for c in contas)
+    saldo_inicial = contas.aggregate(total=Sum('saldo_inicial'))['total'] or 0
 
     # Soma de saldos atuais do usuário
-    saldo_atual = sum(c.saldo_atual for c in contas)
+    saldo_atual = contas.aggregate(total=Sum('saldo_atual'))['total'] or 0
 
     # Calcula o saldo líquido juntando transações e parcelas
     saldo_liquido_transacoes_parcelas = saldo_inicial + total_receitas - total_despesas - total_parceladas
